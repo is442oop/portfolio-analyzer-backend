@@ -34,7 +34,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
+    @GetMapping("/users")
     public FindAllUsersResponse findAll() {
         logger.error("test");
 
@@ -45,7 +45,7 @@ public class UserController {
         return response;
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     public CreateUserResponse createUser(@RequestBody CreateUserRequest request) {
         logger.info("username: " + request.getUsername());
         logger.info("email: " + request.getEmail());
