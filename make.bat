@@ -42,9 +42,9 @@ CALL docker system prune -a
 GOTO :EOF
 
 :BUILD
-CALL mvn clean install
+CALL ./scripts/mvnw.cmd clean install
 GOTO :EOF
 
 :MVN
-CALL mvn spring-boot:run
+CALL ./scripts/mvnw.cmd spring-boot:run
 GOTO :EOF

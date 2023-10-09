@@ -4,8 +4,7 @@
 
 ### Prerequisites
 
-- Java >= 17
-- Maven >= 3.9
+- JDK >= v17
 - Docker
 
 ### Running the application
@@ -28,6 +27,7 @@ Available targets:
   down   : Stop and remove Docker containers, networks, volumes
   prune  : Remove unused Docker containers, networks, volumes, images
   build  : Clean and build the Maven project
+  mvn    : Run the Maven project
   help   : Show this help message
 ```
 
@@ -50,6 +50,7 @@ Available targets:
   down   : Stop and remove Docker containers, networks, volumes
   prune  : Remove unused Docker containers, networks, volumes, images
   build  : Clean and build the Maven project
+  mvn    : Run the Maven project
   help   : Show this help message
 ```
 
