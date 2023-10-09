@@ -22,7 +22,7 @@ prune:
 	docker system prune -a
 
 build:
-	mvn clean install
+	./scripts/mvnw clean install
 
 mvn:
-	mvn spring-boot:run
+	./scripts/mvnw spring-boot:run
