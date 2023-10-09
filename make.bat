@@ -1,4 +1,4 @@
-@ECHO OFF
+@ECHO off
 
 REM Check if an argument is provided
 IF "%~1"=="" GOTO HELP
@@ -9,42 +9,42 @@ IF /I "%~1"=="up" GOTO UP
 IF /I "%~1"=="down" GOTO DOWN
 IF /I "%~1"=="prune" GOTO PRUNE
 IF /I "%~1"=="build" GOTO BUILD
+IF /I "%~1"=="mvn" GOTO MVN
 IF /I "%~1"=="help" GOTO HELP
 
-REM If an invalid argument is provided, show the help message
-:HELP
+:help
 ECHO Available targets:
 ECHO   dev    : Run Docker Compose and Maven project
 ECHO   up     : Start Docker services in the background
 ECHO   down   : Stop and remove Docker containers, networks, volumes
 ECHO   prune  : Remove unused Docker containers, networks, volumes, images
 ECHO   build  : Clean and build the Maven project
+ECHO   mvn    : Run the Maven project
 ECHO   help   : Show this help message
 GOTO :EOF
 
-REM Targets
 :DEV
-CALL :UP
-CALL :BUILD
-CALL :MVN
+call :UP
+call :BUILD
+call :MVN
 GOTO :EOF
 
 :UP
-docker compose -f ./.docker/docker-compose.yml up -d
+CALL docker compose -f ./.docker/docker-compose.yml up -d
 GOTO :EOF
 
 :DOWN
-docker compose -f ./.docker/docker-compose.yml down -v
+CALL docker compose -f ./.docker/docker-compose.yml down -v
 GOTO :EOF
 
 :PRUNE
-docker system prune -a
+CALL docker system prune -a
 GOTO :EOF
 
 :BUILD
-mvn clean install
+CALL mvn clean install
 GOTO :EOF
 
 :MVN
-mvn spring-boot:run
+CALL mvn spring-boot:run
 GOTO :EOF

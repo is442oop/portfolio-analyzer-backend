@@ -1,4 +1,4 @@
-.PHONY: dev up down prune build
+.PHONY: dev up down prune build mvn
 
 help:
 	@echo "Available targets:"
@@ -7,6 +7,7 @@ help:
 	@echo "  down   : Stop and remove Docker containers, networks, volumes"
 	@echo "  prune  : Remove unused Docker containers, networks, volumes, images"
 	@echo "  build  : Clean and build the Maven project"
+	@echo "  mvn    : Run the Maven project"
 	@echo "  help   : Show this help message"
 
 dev: up build mvn
