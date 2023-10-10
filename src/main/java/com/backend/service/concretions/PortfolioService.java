@@ -1,10 +1,13 @@
 package com.backend.service.concretions;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.model.Portfolio;
 import com.backend.repository.PortfolioRepository;
+import com.backend.exception.PortfolioNotFoundException;
 
 
 @Service
@@ -17,6 +20,11 @@ public class PortfolioService implements com.backend.service.abstractions.IPortf
     }
 
     @Override
+    public List<Portfolio> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
     public Portfolio createNewPortfolio(Portfolio portfolio){
         return repository.save(portfolio);
     }
@@ -26,8 +34,9 @@ public class PortfolioService implements com.backend.service.abstractions.IPortf
         Portfolio portfolio = repository.findByPid(pid);
 
         if (portfolio == null){
-            System.out.println("NO PORTFOLIO FOUND");
+            throw new PortfolioNotFoundException(pid);
         }
-        return portfolio;
+        else
+            return portfolio;
     }
 }

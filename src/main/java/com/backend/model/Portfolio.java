@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.GenerationType;
 
@@ -19,18 +20,24 @@ public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "portfolio-sequence-gen")
     private long pid;
-    private long id;
+    
+    @Column(name = "user_id")
+    private long userId;
+
+    @Column(name = "portfolio_name")
     private String portfolioName;
     private String description;
-    private LocalDate date;
+
+    @Column(name = "creation_date")
+    private LocalDate creationDate;
 
     protected Portfolio(){
     }
 
-    public Portfolio(long id, String portfolioName, String description, LocalDate date) {
-        this.id = id;
+    public Portfolio(long userId, String portfolioName, String description, LocalDate creationDate) {
+        this.userId = userId;
         this.portfolioName = portfolioName;
         this.description = description;
-        this.date = date;
+        this.creationDate = creationDate;
     }
 }
