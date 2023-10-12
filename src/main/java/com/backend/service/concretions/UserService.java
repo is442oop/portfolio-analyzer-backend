@@ -59,4 +59,14 @@ public class UserService implements com.backend.service.abstractions.IUserServic
         User user = repository.findByEmail(email);
         return user != null;
     }
+
+    @Override 
+    public User findById(long id) {
+        User user = repository.findById(id);
+        if (user == null) {
+            throw new UserNotFoundException(id);
+        } else {
+            return user;
+        }
+    }
 }
