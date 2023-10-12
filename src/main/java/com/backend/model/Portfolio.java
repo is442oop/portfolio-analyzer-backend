@@ -3,9 +3,14 @@ package com.backend.model;
 import lombok.Data;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.SequenceGenerator;
@@ -20,9 +25,16 @@ public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "portfolio-sequence-gen")
     private long pid;
-    
-    @Column(name = "user_id")
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable = false)
+    // private long userId;
+    private User user;
+
+    @Column(name = "user_id", insertable=false, updatable=false)
     private long userId;
+
 
     @Column(name = "portfolio_name")
     private String portfolioName;
@@ -40,4 +52,9 @@ public class Portfolio {
         this.description = description;
         this.creationDate = creationDate;
     }
+
+    // public long getUserId() {
+    //     return this.user.getId();
+    // }
+
 }

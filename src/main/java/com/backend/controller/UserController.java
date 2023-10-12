@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.GetExchange;
 
 import com.backend.configuration.Constants;
 import com.backend.exception.BadRequestException;
+import com.backend.model.Portfolio;
 import com.backend.model.User;
 import com.backend.request.CreateUserRequest;
 import com.backend.response.CreateUserResponse;
 import com.backend.response.FindAllUsersResponse;
+import com.backend.response.FindUserPortfolios;
 import com.backend.response.FindUserResponse;
 import com.backend.service.abstractions.IUserService;
 import com.backend.service.concretions.UserService;
@@ -89,6 +92,18 @@ public class UserController {
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
         return response;
+    }
+
+    @GetMapping("/users/{id}/portfolios")
+    public FindUserPortfolios findUserPortolios(@PathVariable long id) {
+        List<Portfolio> portfolios = userService.findUserPortfolios(id);
+        FindUserPortfolios response = new FindUserPortfolios();
+
+        response.setPortfolioList(portfolios);
+
+        return response;
+    
+
     }
 
 }

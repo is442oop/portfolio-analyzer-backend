@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.exception.UserNotFoundException;
+import com.backend.model.Portfolio;
 import com.backend.model.User;
 import com.backend.repository.UserRepository;
 
@@ -67,6 +68,16 @@ public class UserService implements com.backend.service.abstractions.IUserServic
             throw new UserNotFoundException(id);
         } else {
             return user;
+        }
+    }
+
+    @Override
+    public List<Portfolio> findUserPortfolios(long id) {
+        User user = repository.findById(id);
+        if (user == null) {
+            throw new UserNotFoundException(id);
+        } else {
+            return user.getPortfolios();
         }
     }
 }
