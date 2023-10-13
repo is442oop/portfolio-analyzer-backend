@@ -28,11 +28,11 @@ public class Portfolio {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name="user_id", nullable = false, insertable=false, updatable=false)
     // private long userId;
     private User user;
 
-    @Column(name = "user_id", insertable=false, updatable=false)
+    @Column(name = "user_id")
     private long userId;
 
 

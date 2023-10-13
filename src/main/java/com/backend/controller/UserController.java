@@ -96,6 +96,7 @@ public class UserController {
 
     @GetMapping("/users/{id}/portfolios")
     public FindUserPortfolios findUserPortolios(@PathVariable long id) {
+        logger.info("Finding user " + id + " portfolio");
         List<Portfolio> portfolios = userService.findUserPortfolios(id);
         FindUserPortfolios response = new FindUserPortfolios();
 
