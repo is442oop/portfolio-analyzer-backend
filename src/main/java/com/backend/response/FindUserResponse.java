@@ -11,5 +11,5 @@ public class FindUserResponse {
     private long id;
     private String username;
     private String email;
-    List<Portfolio> portfolios;
+    List<Portfolio> portfolioList;
 }

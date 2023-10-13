@@ -57,7 +57,7 @@ public class UserController {
         response.setId(user.getId());
         response.setEmail(user.getEmail());
         response.setUsername(user.getUsername());
-        response.setPortfolios(user.getPortfolios());
+        response.setPortfolioList(user.getPortfolios());
         
         return response;
     }
