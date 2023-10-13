@@ -1,7 +1,6 @@
 package com.backend.model;
 
 import lombok.Data;
-import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -40,17 +39,14 @@ public class Portfolio {
     private String portfolioName;
     private String description;
 
-    @Column(name = "creation_date")
-    private LocalDate creationDate;
 
     protected Portfolio(){
     }
 
-    public Portfolio(long userId, String portfolioName, String description, LocalDate creationDate) {
+    public Portfolio(long userId, String portfolioName, String description) {
         this.userId = userId;
         this.portfolioName = portfolioName;
         this.description = description;
-        this.creationDate = creationDate;
     }
 
     // public long getUserId() {

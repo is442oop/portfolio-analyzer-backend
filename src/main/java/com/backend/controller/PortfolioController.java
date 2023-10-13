@@ -59,8 +59,7 @@ public class PortfolioController {
 			new Portfolio(
 				request.getUserId(),
 				request.getPortfolioName(),
-				request.getDescription(),
-				request.getCreationDate()
+				request.getDescription()
 			)
 		);
 		System.out.println(portfolio.getPid());
@@ -71,7 +70,6 @@ public class PortfolioController {
 		response.setUserId(portfolio.getUserId());
 		response.setPortfolioName(portfolio.getPortfolioName());
 		response.setDescription(portfolio.getDescription());
-		response.setCreationDate(portfolio.getCreationDate());
 
 		return response;
 	}
@@ -85,7 +83,6 @@ public class PortfolioController {
 		response.setUserId(portfolio.getUserId());
 		response.setPortfolioName(portfolio.getPortfolioName());
 		response.setDescription(portfolio.getDescription());
-		response.setCreationDate(portfolio.getCreationDate());
 
 		return response;
 	}

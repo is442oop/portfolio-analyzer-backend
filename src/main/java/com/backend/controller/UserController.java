@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.GetExchange;
 
 import com.backend.configuration.Constants;
 import com.backend.exception.BadRequestException;
@@ -26,7 +25,6 @@ import com.backend.response.FindAllUsersResponse;
 import com.backend.response.FindUserPortfolios;
 import com.backend.response.FindUserResponse;
 import com.backend.service.abstractions.IUserService;
-import com.backend.service.concretions.UserService;
 
 @RestController
 @RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -59,7 +57,8 @@ public class UserController {
         response.setId(user.getId());
         response.setEmail(user.getEmail());
         response.setUsername(user.getUsername());
-
+        response.setPortfolios(user.getPortfolios());
+        
         return response;
     }
 
