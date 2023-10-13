@@ -2,6 +2,7 @@ package com.backend.service.abstractions;
 
 import java.util.List;
 
+import com.backend.model.Portfolio;
 import com.backend.model.User;
 
 public interface IUserService {
@@ -11,4 +12,6 @@ public interface IUserService {
     User findByEmail(String email);
     boolean isUsernameExist(String username);
     boolean isEmailExist(String email);
+    User findById(long id);
+    List<Portfolio> findUserPortfolios(long id);
 }

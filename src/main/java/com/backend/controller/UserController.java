@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.configuration.Constants;
 import com.backend.exception.BadRequestException;
+import com.backend.model.Portfolio;
 import com.backend.model.User;
 import com.backend.request.CreateUserRequest;
 import com.backend.response.CreateUserResponse;
 import com.backend.response.FindAllUsersResponse;
+import com.backend.response.FindUserPortfolios;
+import com.backend.response.FindUserResponse;
 import com.backend.service.abstractions.IUserService;
 
 @RestController
@@ -42,6 +46,19 @@ public class UserController {
 
         FindAllUsersResponse response = new FindAllUsersResponse();
         response.setUserList(userList);
+        return response;
+    }
+
+    @GetMapping("/users/{id}")
+    public FindUserResponse findById(@PathVariable long id) {
+        User user = userService.findById(id);
+        
+        FindUserResponse response = new FindUserResponse();
+        response.setId(user.getId());
+        response.setEmail(user.getEmail());
+        response.setUsername(user.getUsername());
+        response.setPortfolioList(user.getPortfolios());
+        
         return response;
     }
 
@@ -74,6 +91,19 @@ public class UserController {
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
         return response;
+    }
+
+    @GetMapping("/users/{id}/portfolios")
+    public FindUserPortfolios findUserPortolios(@PathVariable long id) {
+        logger.info("Finding user " + id + " portfolio");
+        List<Portfolio> portfolios = userService.findUserPortfolios(id);
+        FindUserPortfolios response = new FindUserPortfolios();
+
+        response.setPortfolioList(portfolios);
+
+        return response;
+    
+
     }
 
 }

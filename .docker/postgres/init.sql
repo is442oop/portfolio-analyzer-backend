@@ -35,8 +35,7 @@ CREATE TABLE prod.portfolio (
     pid BIGINT DEFAULT nextval('portfolio_id_seq') PRIMARY KEY,
     user_id BIGINT REFERENCES prod.user(id),
     portfolio_name VARCHAR(255),
-    description TEXT,
-    creation_date DATE
+    description TEXT
 );
 
 CREATE TYPE asset_types AS ENUM ('Stock', 'ETF');
@@ -74,9 +73,9 @@ INSERT INTO prod.user (email, username) VALUES ('user2@example.com', 'user2');
 INSERT INTO prod.user (email, username) VALUES ('user3@example.com', 'user3');
 
 
-INSERT INTO prod.portfolio (user_id, portfolio_name, description, creation_date) VALUES (1, 'Flagship Portfolio', 'My companys flagship portfolio.', '2023-10-09');
-INSERT INTO prod.portfolio (user_id, portfolio_name, description, creation_date) VALUES (2, 'ESG Portfolio', 'This is my ESG portfolio entry.', '2023-10-09');
-INSERT INTO prod.portfolio (user_id, portfolio_name, description, creation_date) VALUES (2, 'SGX Portfolio', 'This is a special portfolio entry in Singapore!', '2023-10-09');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (1, 'Flagship Portfolio', 'My companys flagship portfolio.');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (2, 'ESG Portfolio', 'This is my ESG portfolio entry.');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (2, 'SGX Portfolio', 'This is a special portfolio entry in Singapore!');
 
 
 INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_industry, asset_type) VALUES ('TSLA', 'Tesla Inc', 'Tesla, Inc. is an American electric vehicle and clean energy company based in Palo Alto, California. Teslas current products include electric cars, battery energy storage from home to grid-scale, solar panels and solar roof tiles, as well as other related products and services. In 2020, Tesla had the highest sales in the plug-in and battery electric passenger car segments, capturing 16% of the plug-in market (which includes plug-in hybrids) and 23% of the battery-electric (purely electric) market. Through its subsidiary Tesla Energy, the company develops and is a major installer of solar photovoltaic energy generation systems in the United States. Tesla Energy is also one of the largest global suppliers of battery energy storage systems, with 3 GWh of battery storage supplied in 2020.', 'Technology', 'Stock');

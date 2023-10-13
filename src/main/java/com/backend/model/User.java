@@ -2,6 +2,8 @@ package com.backend.model;
 
 import java.util.List;
 
+import javax.sound.sampled.Port;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -23,6 +25,9 @@ public class User {
     private Long id;
     private String email;
     private String username;
+
+    @OneToMany(mappedBy = "user")
+    private List<Portfolio> portfolios;
 
     protected User() {
     }
