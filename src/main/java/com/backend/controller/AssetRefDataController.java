@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.backend.model.AssetRefData;
 import com.backend.configuration.Constants;
+import com.backend.exception.BadAssetRefDataRequestException;
 import com.backend.response.AssetRefDataResponse;
 import com.backend.service.abstractions.IAssetRefDataService;
 
@@ -38,64 +39,41 @@ public class AssetRefDataController {
         return response;
     }
 
-    @GetMapping(path = "/asset/{assetId}/week")
-    public AssetRefDataResponse getAssetRefDataWeek(@PathVariable long assetId){
+    @GetMapping(path = "/asset/{assetId}/{duration}")
+    public AssetRefDataResponse getHistoricalAssetRefData(@PathVariable("assetId") long assetId, @PathVariable("duration") String duration){
         LocalDate endDate = LocalDate.now().minusDays(1);
-        LocalDate startDate = endDate.minusWeeks(1).plusDays(1);
-        System.out.println("Collecting data from " + startDate + " to " + endDate);
+        LocalDate startDate;
+        
+        switch (duration){
+            case "1week":
+                startDate = endDate.minusWeeks(1).plusDays(1);
+                break;
+            case "1month":
+                startDate = endDate.minusMonths(1).plusDays(1);
+                break;
+            case "6month":
+                startDate = endDate.minusMonths(6).plusDays(1);
+                break;
+            case "1year":
+                startDate = endDate.minusYears(1).plusDays(1);
+                break;
+            case "5year":
+                startDate = endDate.minusYears(5).plusDays(1);
+                break;
+            default:
+                startDate = null;
+        }
+
+        if (startDate==null){
+            throw new BadAssetRefDataRequestException(Constants.MESSAGE_INVALIDHISTORICALCALL);
+        }
+
+        System.out.println("Collecting data from " + startDate + " to " + endDate + "...");
+
         List<AssetRefData> assetList = assetRefDataService.findByAssetIdAndDayRecordBetweenOrderByDayRecordDesc(assetId, startDate, endDate);
-        System.out.println(assetList);
         AssetRefDataResponse response = new AssetRefDataResponse();
         response.setAssetRefDataList(assetList);
+        System.out.println("Data from " + startDate + " to " + endDate + " successfully collected.");
         return response;
     }
-
-    @GetMapping(path = "/asset/{assetId}/month")
-    public AssetRefDataResponse getAssetRefDataMonth(@PathVariable long assetId){
-        LocalDate endDate = LocalDate.now().minusDays(1);
-        LocalDate startDate = endDate.minusMonths(1).plusDays(1);
-        System.out.println("Collecting data from " + startDate + " to " + endDate);
-        List<AssetRefData> assetList = assetRefDataService.findByAssetIdAndDayRecordBetweenOrderByDayRecordDesc(assetId, startDate, endDate);
-        System.out.println(assetList);
-        AssetRefDataResponse response = new AssetRefDataResponse();
-        response.setAssetRefDataList(assetList);
-        return response;
-    }
-
-    @GetMapping(path = "/asset/{assetId}/6month")
-    public AssetRefDataResponse getAssetRefDataSixMonth(@PathVariable long assetId){
-        LocalDate endDate = LocalDate.now().minusDays(1);
-        LocalDate startDate = endDate.minusMonths(6).plusDays(1);
-        System.out.println("Collecting data from " + startDate + " to " + endDate);
-        List<AssetRefData> assetList = assetRefDataService.findByAssetIdAndDayRecordBetweenOrderByDayRecordDesc(assetId, startDate, endDate);
-        System.out.println(assetList);
-        AssetRefDataResponse response = new AssetRefDataResponse();
-        response.setAssetRefDataList(assetList);
-        return response;
-    }
-
-    @GetMapping(path = "/asset/{assetId}/year")
-    public AssetRefDataResponse getAssetRefDataYear(@PathVariable long assetId){
-        LocalDate endDate = LocalDate.now().minusDays(1);
-        LocalDate startDate = endDate.minusYears(1).plusDays(1);
-        System.out.println("Collecting data from " + startDate + " to " + endDate);
-        List<AssetRefData> assetList = assetRefDataService.findByAssetIdAndDayRecordBetweenOrderByDayRecordDesc(assetId, startDate, endDate);
-        System.out.println(assetList);
-        AssetRefDataResponse response = new AssetRefDataResponse();
-        response.setAssetRefDataList(assetList);
-        return response;
-    }
-
-    @GetMapping(path = "/asset/{assetId}/5year")
-    public AssetRefDataResponse getAssetRefDataFiveYears(@PathVariable long assetId){
-        LocalDate endDate = LocalDate.now().minusDays(1);
-        LocalDate startDate = endDate.minusYears(5).plusDays(1);
-        System.out.println("Collecting data from " + startDate + " to " + endDate);
-        List<AssetRefData> assetList = assetRefDataService.findByAssetIdAndDayRecordBetweenOrderByDayRecordDesc(assetId, startDate, endDate);
-        System.out.println(assetList);
-        AssetRefDataResponse response = new AssetRefDataResponse();
-        response.setAssetRefDataList(assetList);
-        return response;
-    }
-
 }
