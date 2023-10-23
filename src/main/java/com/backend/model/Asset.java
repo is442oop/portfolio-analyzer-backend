@@ -1,10 +1,11 @@
 package com.backend.model;
 
 import lombok.Data;
-import java.time.LocalDate;
+// import java.time.LocalDate;
+import java.util.List;
 
 // import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.annotations.Type;
+// import org.hibernate.annotations.Type;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,10 +13,11 @@ import jakarta.persistence.Enumerated;
 // import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 // import jakarta.persistence.JoinColumn;
 // import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.websocket.ClientEndpoint;
+// import jakarta.websocket.ClientEndpoint;
 import jakarta.persistence.Column;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.GenerationType;
@@ -48,5 +50,11 @@ public class Asset {
     @Column(name = "asset_type")
     private AssetType assetType;
 
+    @OneToMany(mappedBy = "asset")
+    private List<AssetRefData> assetRefDataList;
 
+    protected Asset() {
+    }
+
+    
 }

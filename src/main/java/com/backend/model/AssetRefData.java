@@ -3,12 +3,14 @@ package com.backend.model;
 import lombok.Data;
 import java.time.LocalDate;
 
-// import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 // import jakarta.persistence.JoinColumn;
 // import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -27,9 +29,15 @@ public class AssetRefData {
     @Column(name = "asset_ref_data_id")
     private long assetRefId;
 
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "asset_id", nullable = false, insertable=false, updatable=false)
+    private Asset asset;
+
     @Column(name = "asset_id")
     long assetId;
 
+    
     @Column(name = "day_record")
     LocalDate dayRecord;
 

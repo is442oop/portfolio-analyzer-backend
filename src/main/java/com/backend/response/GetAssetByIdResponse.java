@@ -1,6 +1,8 @@
 package com.backend.response;
 
+import com.backend.model.AssetRefData;
 import com.backend.model.AssetType;
+import java.util.List;
 
 import lombok.Data;
 
@@ -12,5 +14,5 @@ public class GetAssetByIdResponse {
     private String assetDescription;
     private String assetIndustry;
     private AssetType assetType;
-
+    private List<AssetRefData> assetRefDataList;
 }
