@@ -39,7 +39,6 @@ public class Portfolio {
     private String portfolioName;
     private String description;
 
-
     protected Portfolio(){
     }
 
@@ -49,8 +48,5 @@ public class Portfolio {
         this.description = description;
     }
 
-    // public long getUserId() {
-    //     return this.user.getId();
-    // }
 
 }
