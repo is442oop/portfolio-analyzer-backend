@@ -38,7 +38,7 @@ public class AssetRefDataController {
     //     return response;
     // }
 
-    @GetMapping(path = "/assetref/{assetId}")
+    @GetMapping(path = "/asset/ref/{assetId}")
     public AssetRefDataResponse getHistoricalAssetRefData(@PathVariable("assetId") long assetId, @RequestParam("duration") String duration){
         LocalDate endDate = LocalDate.now().minusDays(1);
         LocalDate startDate;
