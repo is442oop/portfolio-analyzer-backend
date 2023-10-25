@@ -8,5 +8,5 @@ public interface IPortfolioAssetService {
     List<PortfolioAsset> findAll();
     PortfolioAsset createNewPortfolioAsset(PortfolioAsset portfolioAsset);
     PortfolioAsset findByPortfolioAssetId(long PortfolioAssetId);
-    <List>PortfolioAsset findAllByPortfolioId(long portfolioId);
+    List<PortfolioAsset> findAllByPortfolioId(long pid);
 }
