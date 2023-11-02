@@ -2,6 +2,10 @@ package com.backend.model;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
+import org.springframework.cglib.core.Local;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
@@ -45,6 +49,12 @@ public class PortfolioAsset {
     @Column(name = "quantity")
     private int quantity;
 
+    @Column(name = "date_created")
+    private long dateCreated;
+
+    @Column(name = "date_modified")
+    private long dateModified;
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="asset_id", nullable = false, insertable=false, updatable=false)
@@ -58,6 +68,8 @@ public class PortfolioAsset {
         this.averagePrice = averagePrice;
         this.quantity = quantity;
         this.assetId = assetId;
+        this.dateCreated = System.currentTimeMillis() / 1000;
+        this.dateModified = System.currentTimeMillis() / 1000;
     }
     
 }

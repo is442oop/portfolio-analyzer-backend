@@ -1,6 +1,8 @@
 package com.backend.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public class PortfolioController {
 
     @Autowired
     public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService) {
-        this.portfolioService = portfolioService;
+		this.portfolioService = portfolioService;
 		this.portfolioAssetService = portfolioAssetService;
     }
 
@@ -112,23 +114,32 @@ public class PortfolioController {
 
 		
 		// logger.info("Adding " + request.getAssetId() + " to portfolio " + portfolio.getPid());
-		logger.info("New Portfolio Asset ID: " + request.getAssetId());
-		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
-		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
+		
 		PortfolioAsset portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
 			new PortfolioAsset(
 				request.getPortfolioId(),
 				request.getAssetId(),
 				request.getAveragePrice(),
-				request.getQuantity()
+				request.getQuantity()	
 			)
 		);
 		
+		java.util.Date time = new java.util.Date(portfolioAsset.getDateCreated()*1000);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse();
+
+		logger.info("Created on: " + time);
+		logger.info("New Portfolio Asset ID: " + request.getAssetId());
+		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
+		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
+		
+
 		response.setAssetId(portfolioAsset.getAssetId());
 		response.setPortfolioId(portfolioAsset.getPortfolioId());
 		response.setAveragePrice(portfolioAsset.getAveragePrice());
 		response.setQuantity(portfolioAsset.getQuantity());
+		response.setDateCreated(sdf.format(time));
+		response.setDateModified(sdf.format(time));
 
 		return response;
 }

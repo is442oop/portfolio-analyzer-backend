@@ -56,7 +56,9 @@ CREATE TABLE prod.portfolio_asset (
     portfolio_id BIGINT NOT NULL REFERENCES prod.portfolio(pid),
     asset_id BIGINT NOT NULL  REFERENCES prod.asset(asset_id),
     average_price_decimal DECIMAL NOT NULL,
-    quantity INT NOT NULL
+    quantity INT NOT NULL,
+    date_created  INT NOT NULL DEFAULT extract(epoch from now()),
+    date_modified INT NOT NULL DEFAULT extract(epoch from now())
 );
 
 --- Create the 'asset_ref_data' table under the 'prod' schema with the asset_ref_data_id_seq as the default value for the pid column
