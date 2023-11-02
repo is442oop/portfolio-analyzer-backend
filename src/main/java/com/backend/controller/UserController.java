@@ -52,8 +52,8 @@ public class UserController {
     @GetMapping("/users/{id}")
     public FindUserResponse findById(@PathVariable long id) {
         User user = userService.findById(id);
-        
         FindUserResponse response = new FindUserResponse();
+        
         response.setId(user.getId());
         response.setEmail(user.getEmail());
         response.setUsername(user.getUsername());
