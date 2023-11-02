@@ -141,10 +141,10 @@ public class PortfolioController {
 
 	@GetMapping(path = "/portfolio/{pid}/allocation/industry")
 	public List<Map<String, Object>> getAllocationPercentageByIndustry(@PathVariable long pid) {
-		int pid2 = (int) pid;
-		Portfolio portfolio = portfolioService.findByPid(pid2);
+
+		Portfolio portfolio = portfolioService.findByPid(pid);
 		if(portfolio == null) {
-			throw new PortfolioAssetNotFoundException(pid2);
+			throw new PortfolioAssetNotFoundException(pid);
 		}
 
 		Map<String, Integer> industryMap = new HashMap<String, Integer>();
