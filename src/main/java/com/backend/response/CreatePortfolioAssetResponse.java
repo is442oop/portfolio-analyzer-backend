@@ -8,4 +8,6 @@ public class CreatePortfolioAssetResponse {
     private long assetId;
     private double averagePrice;
     private int quantity;
+    private String dateCreated;
+    private String dateModified;
 }
