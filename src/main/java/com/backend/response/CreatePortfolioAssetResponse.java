@@ -1,6 +1,5 @@
 package com.backend.response;
 
-
 import lombok.Data;
 
 @Data

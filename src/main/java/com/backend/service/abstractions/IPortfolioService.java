@@ -7,5 +7,5 @@ import com.backend.model.Portfolio;
 public interface IPortfolioService {
     List<Portfolio> findAll();
     Portfolio createNewPortfolio(Portfolio portfolio);
-    Portfolio findByPid(int pid);
+    Portfolio findByPid(long pid);
 }
