@@ -30,7 +30,7 @@ public class PortfolioService implements com.backend.service.abstractions.IPortf
     }
 
     @Override
-    public Portfolio findByPid(int pid){
+    public Portfolio findByPid(long pid){
         Portfolio portfolio = repository.findByPid(pid);
 
         if (portfolio == null){

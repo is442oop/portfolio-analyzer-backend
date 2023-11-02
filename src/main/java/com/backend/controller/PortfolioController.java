@@ -93,7 +93,7 @@ public class PortfolioController {
 	}
 
 	@GetMapping(path = "/portfolio/{pid}")
-	public GetPortfolioByIdResponse getPortfolio(@PathVariable int pid) {
+	public GetPortfolioByIdResponse getPortfolio(@PathVariable long pid) {
 		Portfolio portfolio = portfolioService.findByPid(pid);
 
 		GetPortfolioByIdResponse response = new GetPortfolioByIdResponse();
