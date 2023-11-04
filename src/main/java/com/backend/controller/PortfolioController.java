@@ -116,6 +116,7 @@ public class PortfolioController {
 		logger.info("Beginning update of portfolio with the following details");
 		logger.info("Portfolio ID: " + pid);
 		logger.info("New Portfolio Name: " + body.get("portfolioName"));
+		logger.info("New Portfolio Description: " + body.get("description"));
 		String portfolioName = body.get("portfolioName");
 		String description = body.get("description");
 
