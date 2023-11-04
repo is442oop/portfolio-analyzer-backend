@@ -1,6 +1,8 @@
 package com.backend.model;
 
 import lombok.Data;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -45,12 +47,18 @@ public class PortfolioAsset {
     @Column(name = "quantity")
     private int quantity;
 
+    @Column(name = "date_created")
+    private long dateCreated;
+
+    @Column(name = "date_modified")
+    private long dateModified;
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="asset_id", nullable = false, insertable=false, updatable=false)
     private Asset asset;
 
-    protected PortfolioAsset(){
+    public PortfolioAsset(){
     }
 
     public PortfolioAsset(long portfolioId, long assetId, double averagePrice, int quantity) {
@@ -58,6 +66,20 @@ public class PortfolioAsset {
         this.averagePrice = averagePrice;
         this.quantity = quantity;
         this.assetId = assetId;
+        this.dateCreated = System.currentTimeMillis() / 1000;
+        this.dateModified = System.currentTimeMillis() / 1000;
+    }
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
+
+    public PortfolioAsset merge(PortfolioAsset other) {
+        double thisAggregatePrice = this.averagePrice * this.quantity;
+        double otherAggregatePrice = other.getAveragePrice() * other.getQuantity();
+        this.quantity += other.getQuantity();
+        this.averagePrice = (thisAggregatePrice + otherAggregatePrice) / this.quantity;
+        this.averagePrice = Math.round(this.averagePrice * 100.0) / 100.0;
+        
+        return this;
     }
     
 }
