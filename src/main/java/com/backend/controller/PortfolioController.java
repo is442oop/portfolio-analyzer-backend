@@ -5,14 +5,12 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.backend.model.Asset;
 import com.backend.configuration.Constants;
 import com.backend.exception.BadRequestException;
@@ -29,14 +26,13 @@ import com.backend.model.Portfolio;
 import com.backend.model.PortfolioAsset;
 import com.backend.request.CreatePortfolioAssetRequest;
 import com.backend.request.CreatePortfolioRequest;
+import com.backend.request.UpdatePortfolioMetaDataRquest;
 import com.backend.response.CreatePortfolioAssetResponse;
 import com.backend.response.CreatePortfolioResponse;
 import com.backend.response.FindAllPortfoliosResponse;
 import com.backend.response.GetAllAssetsByPortfolioIdResponse;
 import com.backend.response.GetPortfolioByIdResponse;
-import com.backend.response.UpdatePortfolioMetadata;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.backend.response.UpdatePortfolioMetadataResponse;
 import com.backend.service.abstractions.IAssetService;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.service.abstractions.IPortfolioService;
@@ -108,17 +104,21 @@ public class PortfolioController {
 	}
 
 	@PutMapping(path = "/portfolio/{pid}")
-	public UpdatePortfolioMetadata updatePortfolio(@PathVariable long pid, @RequestBody Map<String, String> body) {
+	public UpdatePortfolioMetadataResponse updatePortfolio(@PathVariable long pid,
+			@RequestBody UpdatePortfolioMetaDataRquest body) {
 		Portfolio portfolio = portfolioService.findByPid(pid);
+
 		if (portfolio == null) {
 			throw new PortfolioAssetNotFoundException(pid);
 		}
+
 		logger.info("Beginning update of portfolio with the following details");
 		logger.info("Portfolio ID: " + pid);
-		logger.info("New Portfolio Name: " + body.get("portfolioName"));
-		logger.info("New Portfolio Description: " + body.get("description"));
-		String portfolioName = body.get("portfolioName");
-		String description = body.get("description");
+		logger.info("New Portfolio Name: " + body.getPortfolioName());
+		logger.info("New Portfolio Description: " + body.getDescription());
+
+		String portfolioName = body.getPortfolioName();
+		String description = body.getDescription();
 
 		if (portfolioName == null && description == null) {
 			throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIOMETADATA);
@@ -131,8 +131,10 @@ public class PortfolioController {
 		}
 
 		portfolioService.updatePortfolio(portfolio);
+
 		logger.info("Portfolio updated successfully");
-		UpdatePortfolioMetadata response = new UpdatePortfolioMetadata();
+
+		UpdatePortfolioMetadataResponse response = new UpdatePortfolioMetadataResponse();
 		response.setPortfolioName(portfolio.getPortfolioName());
 		response.setDescription(portfolio.getDescription());
 
