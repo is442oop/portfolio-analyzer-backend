@@ -2,10 +2,12 @@ package com.backend.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,6 +189,25 @@ public class PortfolioController {
 		GetAllAssetsByPortfolioIdResponse response = new GetAllAssetsByPortfolioIdResponse();
 		response.setPortfolioAssetList(aggregatedPortfolioAssets.values().stream().collect(Collectors.toList()));
 		return response;
+	}
+
+	@GetMapping(path = "/portfolio/{pid}/transactions")
+	public List<Map<String, Object>> getTransactionsByPortfolioId(@PathVariable int pid) {
+		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+		List<Map<String, Object>> transactionList = new ArrayList<>();
+
+		for (PortfolioAsset asset : portfolioAssetList) {
+			Map<String, Object> transaction = new HashMap<>();
+			transaction.put("portfolioAssetId", asset.getPortfolioAssetId());
+			transaction.put("portfolioId", asset.getPortfolioId());
+			transaction.put("assetId", asset.getAssetId());
+			transaction.put("averagePrice", asset.getAveragePrice());
+			transaction.put("quantity", asset.getQuantity());
+			transaction.put("dateCreated", asset.getDateCreatedStringMap().get("dateCreated"));
+			transaction.put("dateModified", asset.getDateModifiedStringMap().get("dateModified"));
+			transactionList.add(transaction);
+		}
+		return transactionList;
 	}
 
 	@GetMapping(path = "/portfolio/{pid}/allocation/industry")
