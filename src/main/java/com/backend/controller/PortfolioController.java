@@ -203,8 +203,8 @@ public class PortfolioController {
 			transaction.put("assetId", asset.getAssetId());
 			transaction.put("averagePrice", asset.getAveragePrice());
 			transaction.put("quantity", asset.getQuantity());
-			transaction.put("dateCreated", asset.getDateCreated().get("dateCreated"));
-			transaction.put("dateModified", asset.getDateModified().get("dateModified"));
+			transaction.put("dateCreated", asset.getDateCreatedStringMap().get("dateCreated"));
+			transaction.put("dateModified", asset.getDateModifiedStringMap().get("dateModified"));
 			transactionList.add(transaction);
 		}
 		return transactionList;

@@ -87,7 +87,7 @@ public class PortfolioAsset {
         return this;
     }
 
-    public Map<String,String> getDateCreated() {
+    public Map<String,String> getDateCreatedStringMap() {
         Map<String, String> dates = new HashMap<>();
         long unixCreated = this.dateCreated;
         Date created = new Date(unixCreated*1000L);
@@ -100,7 +100,7 @@ public class PortfolioAsset {
         return dates;
     }
 
-    public Map<String,String> getDateModified() {
+    public Map<String,String> getDateModifiedStringMap() {
         Map<String, String> dates = new HashMap<>();
         long unixModified = this.dateModified;
         Date modified = new Date(unixModified*1000L);
