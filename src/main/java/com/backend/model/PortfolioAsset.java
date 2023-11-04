@@ -3,6 +3,11 @@ package com.backend.model;
 import lombok.Data;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -80,6 +85,32 @@ public class PortfolioAsset {
         this.averagePrice = Math.round(this.averagePrice * 100.0) / 100.0;
         
         return this;
+    }
+
+    public Map<String,String> getDateCreated() {
+        Map<String, String> dates = new HashMap<>();
+        long unixCreated = this.dateCreated;
+        Date created = new Date(unixCreated*1000L);
+        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
+        jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        String createdDate = jdf.format(created);
+
+        dates.put("dateCreated", createdDate);
+
+        return dates;
+    }
+
+    public Map<String,String> getDateModified() {
+        Map<String, String> dates = new HashMap<>();
+        long unixModified = this.dateModified;
+        Date modified = new Date(unixModified*1000L);
+        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
+        jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        String modifiedDate = jdf.format(modified);
+
+        dates.put("dateModified", modifiedDate);
+
+        return dates;
     }
     
 }

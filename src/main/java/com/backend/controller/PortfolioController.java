@@ -196,23 +196,15 @@ public class PortfolioController {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
 		List<Map<String, Object>> transactionList = new ArrayList<>();
 
-		for (int i = 0; i < portfolioAssetList.size(); i++) {
-			long unixCreated = portfolioAssetList.get(i).getDateCreated();
-			long unixModified = portfolioAssetList.get(i).getDateModified();
-			Date created = new Date(unixCreated*1000L);
-			Date modified = new Date(unixModified*1000L);
-			SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
-			jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-			String createdDate = jdf.format(created);
-			String modifiedDate = jdf.format(modified);
+		for (PortfolioAsset asset : portfolioAssetList) {
 			Map<String, Object> transaction = new HashMap<>();
-			transaction.put("portfolioAssetId", portfolioAssetList.get(i).getPortfolioAssetId());
-			transaction.put("portfolioId", portfolioAssetList.get(i).getPortfolioId());
-			transaction.put("assetId", portfolioAssetList.get(i).getAssetId());
-			transaction.put("averagePrice", portfolioAssetList.get(i).getAveragePrice());
-			transaction.put("quantity", portfolioAssetList.get(i).getQuantity());
-			transaction.put("dateCreated", createdDate);
-			transaction.put("dateModified", modifiedDate);
+			transaction.put("portfolioAssetId", asset.getPortfolioAssetId());
+			transaction.put("portfolioId", asset.getPortfolioId());
+			transaction.put("assetId", asset.getAssetId());
+			transaction.put("averagePrice", asset.getAveragePrice());
+			transaction.put("quantity", asset.getQuantity());
+			transaction.put("dateCreated", asset.getDateCreated().get("dateCreated"));
+			transaction.put("dateModified", asset.getDateModified().get("dateModified"));
 			transactionList.add(transaction);
 		}
 		return transactionList;
