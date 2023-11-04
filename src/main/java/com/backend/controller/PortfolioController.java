@@ -2,10 +2,12 @@ package com.backend.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,6 +189,33 @@ public class PortfolioController {
 		GetAllAssetsByPortfolioIdResponse response = new GetAllAssetsByPortfolioIdResponse();
 		response.setPortfolioAssetList(aggregatedPortfolioAssets.values().stream().collect(Collectors.toList()));
 		return response;
+	}
+
+	@GetMapping(path = "/portfolio/{pid}/transactions")
+	public List<Map<String, Object>> getTransactionsByPortfolioId(@PathVariable int pid) {
+		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+		List<Map<String, Object>> transactionList = new ArrayList<>();
+
+		for (int i = 0; i < portfolioAssetList.size(); i++) {
+			long unixCreated = portfolioAssetList.get(i).getDateCreated();
+			long unixModified = portfolioAssetList.get(i).getDateModified();
+			Date created = new Date(unixCreated*1000L);
+			Date modified = new Date(unixModified*1000L);
+			SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
+			jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+			String createdDate = jdf.format(created);
+			String modifiedDate = jdf.format(modified);
+			Map<String, Object> transaction = new HashMap<>();
+			transaction.put("portfolioAssetId", portfolioAssetList.get(i).getPortfolioAssetId());
+			transaction.put("portfolioId", portfolioAssetList.get(i).getPortfolioId());
+			transaction.put("assetId", portfolioAssetList.get(i).getAssetId());
+			transaction.put("averagePrice", portfolioAssetList.get(i).getAveragePrice());
+			transaction.put("quantity", portfolioAssetList.get(i).getQuantity());
+			transaction.put("dateCreated", createdDate);
+			transaction.put("dateModified", modifiedDate);
+			transactionList.add(transaction);
+		}
+		return transactionList;
 	}
 
 	@GetMapping(path = "/portfolio/{pid}/allocation/industry")
