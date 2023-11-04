@@ -38,8 +38,8 @@ public class PortfolioAsset {
     @Column(name = "portfolio_id")
     private long portfolioId;
 
-    @Column(name = "asset_id")
-    private long assetId;
+    @Column(name = "asset_ticker")
+    private String assetTicker;
 
     @Column(name = "average_price_decimal")
     private double averagePrice;
@@ -55,14 +55,15 @@ public class PortfolioAsset {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="asset_id", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name="asset_ticker", nullable = false, insertable=false, updatable=false)
     private Asset asset;
 
     public PortfolioAsset(){
     }
 
-    public PortfolioAsset(long portfolioId, long assetId, double averagePrice, int quantity) {
+    public PortfolioAsset(long portfolioId, String assetTicker, double averagePrice, int quantity) {
         this.portfolioId = portfolioId;
+        this.assetTicker = assetTicker;
         this.averagePrice = averagePrice;
         this.quantity = quantity;
         this.assetId = assetId;

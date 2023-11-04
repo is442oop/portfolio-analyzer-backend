@@ -98,27 +98,34 @@ public class PortfolioController {
 		if (request.getPortfolioId() == null) {
 			throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
 		}
-		if (request.getAssetId() == null) {
+		if (request.getAssetTicker() == null) {
 			throw new BadRequestException(Constants.MESSAGE_INVALIDASSETID);
 		}
 
+		// Portfolio portfolio = restTemplate.exchange("http://localhost:8080/portfolio/"+request.getPortfolioId(), HttpMethod.GET, null, Portfolio.class).getBody();
+
+		
+		// logger.info("Adding " + request.getAssetId() + " to portfolio " + portfolio.getPid());
+		logger.info("New Portfolio Asset ID: " + request.getAssetTicker());
+		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
+		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 		PortfolioAsset portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
 				new PortfolioAsset(
 						request.getPortfolioId(),
-						request.getAssetId(),
+						request.getAssetTicker(),
 						request.getAveragePrice(),
 						request.getQuantity()));
 
 		java.util.Date time = new java.util.Date(portfolioAsset.getDateCreated() * 1000);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse();
+		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse(); 
 
 		logger.info("Created on: " + time);
 		logger.info("New Portfolio Asset ID: " + request.getAssetId());
 		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
 		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 
-		response.setAssetId(portfolioAsset.getAssetId());
+		response.setAssetTicker(portfolioAsset.getAssetTicker());
 		response.setPortfolioId(portfolioAsset.getPortfolioId());
 		response.setAveragePrice(portfolioAsset.getAveragePrice());
 		response.setQuantity(portfolioAsset.getQuantity());
