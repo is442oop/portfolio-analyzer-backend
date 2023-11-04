@@ -5,21 +5,20 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;import com.backend.model.Asset;
+import com.backend.model.Asset;
 import com.backend.configuration.Constants;
 import com.backend.exception.BadRequestException;
 import com.backend.exception.PortfolioAssetNotFoundException;
@@ -27,13 +26,13 @@ import com.backend.model.Portfolio;
 import com.backend.model.PortfolioAsset;
 import com.backend.request.CreatePortfolioAssetRequest;
 import com.backend.request.CreatePortfolioRequest;
+import com.backend.request.UpdatePortfolioMetaDataRquest;
 import com.backend.response.CreatePortfolioAssetResponse;
 import com.backend.response.CreatePortfolioResponse;
 import com.backend.response.FindAllPortfoliosResponse;
 import com.backend.response.GetAllAssetsByPortfolioIdResponse;
 import com.backend.response.GetPortfolioByIdResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.backend.response.UpdatePortfolioMetadataResponse;
 import com.backend.service.abstractions.IAssetService;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.service.abstractions.IPortfolioService;
@@ -47,7 +46,8 @@ public class PortfolioController {
 	private final IAssetService assetService;
 
 	@Autowired
-	public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService, IAssetService assetService) {
+	public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService,
+			IAssetService assetService) {
 		this.portfolioService = portfolioService;
 		this.portfolioAssetService = portfolioAssetService;
 		this.assetService = assetService;
@@ -103,6 +103,44 @@ public class PortfolioController {
 		return response;
 	}
 
+	@PutMapping(path = "/portfolio/{pid}")
+	public UpdatePortfolioMetadataResponse updatePortfolio(@PathVariable long pid,
+			@RequestBody UpdatePortfolioMetaDataRquest body) {
+		Portfolio portfolio = portfolioService.findByPid(pid);
+
+		if (portfolio == null) {
+			throw new PortfolioAssetNotFoundException(pid);
+		}
+
+		logger.info("Beginning update of portfolio with the following details");
+		logger.info("Portfolio ID: " + pid);
+		logger.info("New Portfolio Name: " + body.getPortfolioName());
+		logger.info("New Portfolio Description: " + body.getDescription());
+
+		String portfolioName = body.getPortfolioName();
+		String description = body.getDescription();
+
+		if (portfolioName == null && description == null) {
+			throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIOMETADATA);
+		}
+		if (portfolioName != null && !portfolioName.isEmpty()) {
+			portfolio.setPortfolioName(portfolioName);
+		}
+		if (description != null && !description.isEmpty()) {
+			portfolio.setDescription(description);
+		}
+
+		portfolioService.updatePortfolio(portfolio);
+
+		logger.info("Portfolio updated successfully");
+
+		UpdatePortfolioMetadataResponse response = new UpdatePortfolioMetadataResponse();
+		response.setPortfolioName(portfolio.getPortfolioName());
+		response.setDescription(portfolio.getDescription());
+
+		return response;
+	}
+
 	@PostMapping(path = "/portfolio/asset")
 	public CreatePortfolioAssetResponse addPortfolioAsset(@RequestBody CreatePortfolioAssetRequest request) {
 		if (request.getPortfolioId() == null) {
@@ -136,7 +174,7 @@ public class PortfolioController {
 		response.setDateModified(sdf.format(time));
 
 		return response;
-		}
+	}
 
 	@GetMapping(path = "/portfolio/assets/{pid}")
 	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable int pid) {
@@ -151,12 +189,11 @@ public class PortfolioController {
 		return response;
 	}
 
-
 	@GetMapping(path = "/portfolio/{pid}/allocation/industry")
 	public List<Map<String, Object>> getAllocationPercentageByIndustry(@PathVariable long pid) {
 
 		Portfolio portfolio = portfolioService.findByPid(pid);
-		if(portfolio == null) {
+		if (portfolio == null) {
 			throw new PortfolioAssetNotFoundException(pid);
 		}
 
@@ -164,12 +201,12 @@ public class PortfolioController {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
 		int totalSize = portfolioAssetList.size();
 
-		for(int i = 0; i < totalSize; i++) {
+		for (int i = 0; i < totalSize; i++) {
 			long portfolioAssetId = portfolioAssetList.get(i).getAssetId();
 			Asset asset = assetService.findByAssetId(portfolioAssetId);
 			String industry = asset.getAssetIndustry();
 
-			if(!(industryMap.containsKey(industry))) {
+			if (!(industryMap.containsKey(industry))) {
 				industryMap.put(industry, 1);
 			} else {
 				int count = industryMap.get(industry);
@@ -179,7 +216,7 @@ public class PortfolioController {
 		}
 		List<Map<String, Object>> allocationList = new ArrayList<>();
 
-		for (Map.Entry<String,Integer> mapElement : industryMap.entrySet()) {
+		for (Map.Entry<String, Integer> mapElement : industryMap.entrySet()) {
 			String industry = mapElement.getKey();
 			Integer count = mapElement.getValue();
 			float percentage = (float) count / totalSize;

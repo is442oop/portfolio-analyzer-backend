@@ -9,7 +9,6 @@ import com.backend.model.Portfolio;
 import com.backend.repository.PortfolioRepository;
 import com.backend.exception.PortfolioNotFoundException;
 
-
 @Service
 public class PortfolioService implements com.backend.service.abstractions.IPortfolioService {
     private final PortfolioRepository repository;
@@ -25,18 +24,23 @@ public class PortfolioService implements com.backend.service.abstractions.IPortf
     }
 
     @Override
-    public Portfolio createNewPortfolio(Portfolio portfolio){
+    public Portfolio createNewPortfolio(Portfolio portfolio) {
         return repository.save(portfolio);
     }
 
     @Override
-    public Portfolio findByPid(long pid){
+    public Portfolio findByPid(long pid) {
         Portfolio portfolio = repository.findByPid(pid);
 
-        if (portfolio == null){
+        if (portfolio == null) {
             throw new PortfolioNotFoundException(pid);
-        }
-        else
+        } else
             return portfolio;
     }
+
+    @Override
+    public Portfolio updatePortfolio(Portfolio updatedPortfolio) {
+        return repository.save(updatedPortfolio);
+    }
+
 }
