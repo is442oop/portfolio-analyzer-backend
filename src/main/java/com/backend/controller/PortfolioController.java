@@ -254,5 +254,7 @@ public class PortfolioController {
 	}
 
 	@GetMapping(path = "/portfolio/{pid}/allocation/ticker")
-
+	public List<Map<String, Object>> getAllocationPercentageByTicker (@PathVariable long pid) {
+		return null;
+	}
 }
