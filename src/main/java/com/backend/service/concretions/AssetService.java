@@ -28,13 +28,13 @@ public class AssetService implements com.backend.service.abstractions.IAssetServ
         return repository.findAll();
     }
     
-    @Override
-    public Asset findByAssetId(long assetId) {
-        Asset asset = repository.findByAssetId(assetId);
-        if (asset == null) {
-            throw new AssetNotFoundException(assetId);
-        } else {
-            return asset;
+    // @Override
+    // public Asset findByAssetId(long assetId) {
+    //     Asset asset = repository.findByAssetId(assetId);
+    //     if (asset == null) {
+    //         throw new AssetNotFoundException(assetId);
+    //     } else {
+    //         return asset;
         }
     }
 
