@@ -1,5 +1,8 @@
 package com.backend.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -13,21 +16,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.backend.model.Asset;
 // import com.backend.configuration.Constants;
-import com.backend.response.GetAssetByTickerResponse;
+import com.backend.response.GetAssetByIdResponse;
+import com.backend.response.AssetResponse;
 import com.backend.service.abstractions.IAssetService;
 
 @RestController
 @RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 public class AssetController {
     Logger logger = LoggerFactory.getLogger(AssetController.class);
-    private final IAssetService assetServce;
+    private final IAssetService assetService;
 
     @Autowired
     public AssetController (IAssetService assetService) {
-        this.assetServce = assetService;
+        this.assetService = assetService;
     }
 
-    @GetMapping(path = "/asset")
+    @GetMapping(path = "/asset/")
     public GetAssetByTickerResponse findByAssetTicker(@RequestParam("ticker") String ticker) {
         Asset asset = assetServce.findByAssetTicker(ticker);
 
@@ -41,5 +45,20 @@ public class AssetController {
         // response.setAssetRefDataList(asset.getAssetRefDataList());
 
         return response;
+    }
+
+    @GetMapping(path = "/asset")
+    public List<AssetResponse> getAssets() {
+        List<Asset> assetList = assetService.findAll();
+        List<AssetResponse> responseList = new ArrayList<>();
+        
+        for(Asset asset : assetList) {
+            AssetResponse response = new AssetResponse();
+            response.setAssetName(asset.getAssetName());
+            response.setAssetTicker(asset.getAssetTicker().trim());
+            responseList.add(response);
+        }
+        return responseList;
+
     }
 }

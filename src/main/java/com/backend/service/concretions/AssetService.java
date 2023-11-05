@@ -1,5 +1,7 @@
 package com.backend.service.concretions;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,20 @@ public class AssetService implements com.backend.service.abstractions.IAssetServ
     public Asset findByAssetTicker(String assetTicker){
         Asset asset = repository.findByAssetTicker(assetTicker);
         return asset;
+
+    @Override
+    public List<Asset> findAll() {
+        return repository.findAll();
+    }
+    
+    @Override
+    public Asset findByAssetId(long assetId) {
+        Asset asset = repository.findByAssetId(assetId);
+        if (asset == null) {
+            throw new AssetNotFoundException(assetId);
+        } else {
+            return asset;
+        }
     }
 
 }
