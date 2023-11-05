@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.backend.model.Asset;
 // import com.backend.configuration.Constants;
-import com.backend.response.GetAssetByIdResponse;
+import com.backend.response.GetAssetByTickerResponse;
 import com.backend.response.AssetResponse;
 import com.backend.service.abstractions.IAssetService;
 
