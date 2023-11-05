@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,8 @@ import com.backend.response.UpdatePortfolioMetadataResponse;
 import com.backend.service.abstractions.IAssetService;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.service.abstractions.IPortfolioService;
+import com.backend.request.DeletePortfolioAssetRequest;
+
 
 @RestController
 @RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -259,4 +262,35 @@ public class PortfolioController {
 
 	}
 
+	@DeleteMapping(path = "/portfolio/asset/delete")
+	public void deletePortfolioAsset(@RequestBody DeletePortfolioAssetRequest request) {
+		if (request.getPortfolioId() == null) {
+			throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
+		}
+		if (request.getAssetTicker() == null) {
+			throw new BadRequestException(Constants.MESSAGE_INVALIDASSETTICKER);
+		}
+
+		long pid = request.getPortfolioId();
+		String assetTicker = request.getAssetTicker();
+
+		PortfolioAsset portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
+		if (portfolioAsset == null) {
+			throw new PortfolioAssetNotFoundException(pid, assetTicker);
+		}
+
+		portfolioAssetService.deletePortfolioAsset(pid, assetTicker);
+		
+	}
+
+	@GetMapping(path = "/portfolio/asset/{pid}/{assetTicker}")
+	public PortfolioAsset getPortfolioAssetByPortfolioIdAndAssetTicker(@PathVariable long pid, @PathVariable String assetTicker) {
+
+		PortfolioAsset portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
+		if (portfolioAsset == null) {
+			throw new PortfolioAssetNotFoundException(pid, assetTicker);
+		}
+		
+		return portfolioAsset;
+	}
 }

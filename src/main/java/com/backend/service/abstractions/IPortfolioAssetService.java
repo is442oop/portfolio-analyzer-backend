@@ -9,4 +9,6 @@ public interface IPortfolioAssetService {
     PortfolioAsset createNewPortfolioAsset(PortfolioAsset portfolioAsset);
     PortfolioAsset findByPortfolioAssetId(long PortfolioAssetId);
     List<PortfolioAsset> findAllByPortfolioId(long pid);
+    public PortfolioAsset deletePortfolioAsset(long pid, String ticker);
+    public PortfolioAsset findByPortfolioIdAndAssetTicker(long portfolioId, String assetTicker);
 }
