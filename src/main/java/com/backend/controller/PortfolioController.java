@@ -179,7 +179,7 @@ public class PortfolioController {
 	}
 
 	@GetMapping(path = "/portfolio/assets/{pid}")
-	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable int pid) {
+	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable long pid) {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
 		Map<Long, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
 				.collect(Collectors.groupingBy(e -> e.getAssetId(), Collectors.collectingAndThen(
@@ -192,7 +192,7 @@ public class PortfolioController {
 	}
 
 	@GetMapping(path = "/portfolio/{pid}/transactions")
-	public List<Map<String, Object>> getTransactionsByPortfolioId(@PathVariable int pid) {
+	public List<Map<String, Object>> getTransactionsByPortfolioId(@PathVariable long pid) {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
 		List<Map<String, Object>> transactionList = new ArrayList<>();
 
@@ -252,4 +252,7 @@ public class PortfolioController {
 		return allocationList;
 
 	}
+
+	@GetMapping(path = "/portfolio/{pid}/allocation/ticker")
+
 }
