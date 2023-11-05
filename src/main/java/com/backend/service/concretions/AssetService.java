@@ -36,6 +36,5 @@ public class AssetService implements com.backend.service.abstractions.IAssetServ
     //     } else {
     //         return asset;
         // }
-    }
-
+    // }
 }
