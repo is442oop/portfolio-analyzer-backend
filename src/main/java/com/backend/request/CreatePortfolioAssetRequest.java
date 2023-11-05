@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class CreatePortfolioAssetRequest extends BaseRequest {
     private Long portfolioId;
-    private Long assetId;
+    private String assetTicker;
     private double averagePrice;
     private int quantity;
     private long dateCreated;

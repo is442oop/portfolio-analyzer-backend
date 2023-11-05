@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CreatePortfolioAssetResponse {
     private long portfolioId;
-    private long assetId;
+    private String assetTicker;
     private double averagePrice;
     private int quantity;
     private String dateCreated;

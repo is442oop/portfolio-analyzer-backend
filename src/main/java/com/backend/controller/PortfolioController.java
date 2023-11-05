@@ -148,27 +148,33 @@ public class PortfolioController {
 		if (request.getPortfolioId() == null) {
 			throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
 		}
-		if (request.getAssetId() == null) {
+		if (request.getAssetTicker() == null) {
 			throw new BadRequestException(Constants.MESSAGE_INVALIDASSETID);
 		}
 
+		// Portfolio portfolio = restTemplate.exchange("http://localhost:8080/portfolio/"+request.getPortfolioId(), HttpMethod.GET, null, Portfolio.class).getBody();
+
+		
+		// logger.info("Adding " + request.getAssetId() + " to portfolio " + portfolio.getPid());
+		logger.info("New Portfolio Asset Ticker: " + request.getAssetTicker());
+		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
+		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 		PortfolioAsset portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
 				new PortfolioAsset(
 						request.getPortfolioId(),
-						request.getAssetId(),
+						request.getAssetTicker(),
 						request.getAveragePrice(),
 						request.getQuantity()));
 
 		java.util.Date time = new java.util.Date(portfolioAsset.getDateCreated() * 1000);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse();
+		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse(); 
 
 		logger.info("Created on: " + time);
-		logger.info("New Portfolio Asset ID: " + request.getAssetId());
 		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
 		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 
-		response.setAssetId(portfolioAsset.getAssetId());
+		response.setAssetTicker(portfolioAsset.getAssetTicker());
 		response.setPortfolioId(portfolioAsset.getPortfolioId());
 		response.setAveragePrice(portfolioAsset.getAveragePrice());
 		response.setQuantity(portfolioAsset.getQuantity());
@@ -181,8 +187,8 @@ public class PortfolioController {
 	@GetMapping(path = "/portfolio/assets/{pid}")
 	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable int pid) {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		Map<Long, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
-				.collect(Collectors.groupingBy(e -> e.getAssetId(), Collectors.collectingAndThen(
+		Map<String, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
+				.collect(Collectors.groupingBy(e -> e.getAssetTicker(), Collectors.collectingAndThen(
 						Collectors.toList(),
 						l -> l.stream().reduce(PortfolioAsset::merge).get())));
 
@@ -200,7 +206,7 @@ public class PortfolioController {
 			Map<String, Object> transaction = new HashMap<>();
 			transaction.put("portfolioAssetId", asset.getPortfolioAssetId());
 			transaction.put("portfolioId", asset.getPortfolioId());
-			transaction.put("assetId", asset.getAssetId());
+			transaction.put("assetTicker", asset.getAssetTicker());
 			transaction.put("averagePrice", asset.getAveragePrice());
 			transaction.put("quantity", asset.getQuantity());
 			transaction.put("dateCreated", asset.getDateCreatedStringMap().get("dateCreated"));
@@ -223,8 +229,8 @@ public class PortfolioController {
 		int totalSize = portfolioAssetList.size();
 
 		for (int i = 0; i < totalSize; i++) {
-			long portfolioAssetId = portfolioAssetList.get(i).getAssetId();
-			Asset asset = assetService.findByAssetId(portfolioAssetId);
+			String portfolioAssetTicker = portfolioAssetList.get(i).getAssetTicker();
+			Asset asset = assetService.findByAssetTicker(portfolioAssetTicker);
 			String industry = asset.getAssetIndustry();
 
 			if (!(industryMap.containsKey(industry))) {
@@ -252,4 +258,5 @@ public class PortfolioController {
 		return allocationList;
 
 	}
+
 }
