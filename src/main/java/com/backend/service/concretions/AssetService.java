@@ -35,7 +35,7 @@ public class AssetService implements com.backend.service.abstractions.IAssetServ
     //         throw new AssetNotFoundException(assetId);
     //     } else {
     //         return asset;
-        }
+        // }
     }
 
 }
