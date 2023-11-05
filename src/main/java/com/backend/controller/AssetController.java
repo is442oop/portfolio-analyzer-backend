@@ -33,7 +33,7 @@ public class AssetController {
 
     @GetMapping(path = "/asset/")
     public GetAssetByTickerResponse findByAssetTicker(@RequestParam("ticker") String ticker) {
-        Asset asset = assetServce.findByAssetTicker(ticker);
+        Asset asset = assetService.findByAssetTicker(ticker);
 
         GetAssetByTickerResponse response = new GetAssetByTickerResponse();
         // response.setAssetId(asset.getAssetId());

@@ -206,7 +206,7 @@ public class PortfolioController {
 			Map<String, Object> transaction = new HashMap<>();
 			transaction.put("portfolioAssetId", asset.getPortfolioAssetId());
 			transaction.put("portfolioId", asset.getPortfolioId());
-			transaction.put("assetId", asset.getAssetId());
+			transaction.put("assetTicker", asset.getAssetTicker());
 			transaction.put("averagePrice", asset.getAveragePrice());
 			transaction.put("quantity", asset.getQuantity());
 			transaction.put("dateCreated", asset.getDateCreatedStringMap().get("dateCreated"));
@@ -229,8 +229,8 @@ public class PortfolioController {
 		int totalSize = portfolioAssetList.size();
 
 		for (int i = 0; i < totalSize; i++) {
-			long portfolioAssetId = portfolioAssetList.get(i).getAssetId();
-			Asset asset = assetService.findByAssetId(portfolioAssetId);
+			String portfolioAssetTicker = portfolioAssetList.get(i).getAssetTicker();
+			Asset asset = assetService.findByAssetTicker(portfolioAssetTicker);
 			String industry = asset.getAssetIndustry();
 
 			if (!(industryMap.containsKey(industry))) {
