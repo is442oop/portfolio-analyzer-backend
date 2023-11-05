@@ -121,7 +121,6 @@ public class PortfolioController {
 		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse(); 
 
 		logger.info("Created on: " + time);
-		logger.info("New Portfolio Asset ID: " + request.getAssetId());
 		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
 		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 
@@ -138,14 +137,20 @@ public class PortfolioController {
 	@GetMapping(path = "/portfolio/assets/{pid}")
 	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable int pid) {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		Map<Long, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
-				.collect(Collectors.groupingBy(e -> e.getAssetId(), Collectors.collectingAndThen(
+		Map<String, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
+				.collect(Collectors.groupingBy(e -> e.getAssetTicker(), Collectors.collectingAndThen(
 						Collectors.toList(),
 						l -> l.stream().reduce(PortfolioAsset::merge).get())));
 
 		GetAllAssetsByPortfolioIdResponse response = new GetAllAssetsByPortfolioIdResponse();
 		response.setPortfolioAssetList(aggregatedPortfolioAssets.values().stream().collect(Collectors.toList()));
 		return response;
+	}
+
+	@GetMapping(path="/test/{pid}")
+	public void getAssets(@PathVariable int pid){
+		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+		System.out.println(""+portfolioAssetList);
 	}
 
 }

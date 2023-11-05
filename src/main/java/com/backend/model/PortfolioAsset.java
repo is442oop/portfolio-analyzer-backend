@@ -66,7 +66,6 @@ public class PortfolioAsset {
         this.assetTicker = assetTicker;
         this.averagePrice = averagePrice;
         this.quantity = quantity;
-        this.assetId = assetId;
         this.dateCreated = System.currentTimeMillis() / 1000;
         this.dateModified = System.currentTimeMillis() / 1000;
     }
