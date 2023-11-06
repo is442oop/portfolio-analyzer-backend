@@ -55,7 +55,7 @@ CREATE TABLE prod.portfolio_asset (
     portfolio_asset_id BIGINT DEFAULT nextval('portfolio_asset_id_seq') PRIMARY KEY,
     portfolio_id BIGINT NOT NULL REFERENCES prod.portfolio(pid),
     -- asset_id BIGINT NOT NULL  REFERENCES prod.asset(asset_id),
-    asset_ticker CHAR(15) NOT NULL REFERENCES prod.asset(asset_ticker),
+    asset_ticker VARCHAR(15) NOT NULL REFERENCES prod.asset(asset_ticker),
     price DECIMAL NOT NULL,
     quantity INT NOT NULL,
     date_created  INT NOT NULL DEFAULT extract(epoch from now()),

@@ -262,7 +262,7 @@ public class PortfolioController {
 
 	}
 
-	@DeleteMapping(path = "/portfolio/assets/delete")
+	@DeleteMapping(path = "/portfolio/asset/delete")
 	public void deletePortfolioAsset(@RequestBody DeletePortfolioAssetRequest request) {
 		if (request.getPortfolioId() == null) {
 			throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
@@ -284,7 +284,7 @@ public class PortfolioController {
 		}		
 	}
 
-	@GetMapping(path = "/portfolio/assets/{pid}/{assetTicker}")
+	@GetMapping(path = "/portfolio/asset/{pid}/{assetTicker}")
 	public List<PortfolioAsset> getPortfolioAssetByPortfolioIdAndAssetTicker(@PathVariable long pid, @PathVariable String assetTicker) {
 
 		List<PortfolioAsset> portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
