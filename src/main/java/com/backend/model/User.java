@@ -13,7 +13,6 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name="user", schema = "prod")
-@SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
 public class User {
 
     @Id
