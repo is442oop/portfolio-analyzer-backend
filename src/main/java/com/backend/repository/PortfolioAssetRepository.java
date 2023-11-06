@@ -11,5 +11,5 @@ import com.backend.model.PortfolioAsset;
 public interface PortfolioAssetRepository extends JpaRepository<PortfolioAsset, Long> {
     PortfolioAsset findByPortfolioAssetId(long PortfolioAssetId);
     List<PortfolioAsset> findAllByPortfolioId(long pid);
-    PortfolioAsset findByPortfolioIdAndAssetTicker(long portfolioId, String assetTicker);
+    List<PortfolioAsset> findByPortfolioIdAndAssetTicker(long portfolioId, String assetTicker);
 }

@@ -274,19 +274,20 @@ public class PortfolioController {
 		long pid = request.getPortfolioId();
 		String assetTicker = request.getAssetTicker();
 
-		PortfolioAsset portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
-		if (portfolioAsset == null) {
-			throw new PortfolioAssetNotFoundException(pid, assetTicker);
-		}
+		List<PortfolioAsset> portfolioAssets = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
 
-		portfolioAssetService.deletePortfolioAsset(pid, assetTicker);
-		
+		for (PortfolioAsset portfolioAsset : portfolioAssets){
+			if (portfolioAsset == null) {
+				throw new PortfolioAssetNotFoundException(pid, assetTicker);
+			}
+			portfolioAssetService.deletePortfolioAsset(pid, assetTicker);
+		}		
 	}
 
 	@GetMapping(path = "/portfolio/asset/{pid}/{assetTicker}")
-	public PortfolioAsset getPortfolioAssetByPortfolioIdAndAssetTicker(@PathVariable long pid, @PathVariable String assetTicker) {
+	public List<PortfolioAsset> getPortfolioAssetByPortfolioIdAndAssetTicker(@PathVariable long pid, @PathVariable String assetTicker) {
 
-		PortfolioAsset portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
+		List<PortfolioAsset> portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
 		if (portfolioAsset == null) {
 			throw new PortfolioAssetNotFoundException(pid, assetTicker);
 		}
