@@ -46,8 +46,8 @@ public class PortfolioAsset {
     @Column(name = "asset_ticker")
     private String assetTicker;
 
-    @Column(name = "average_price_decimal")
-    private double averagePrice;
+    @Column(name = "price")
+    private double price;
 
     @Column(name = "quantity")
     private int quantity;
@@ -66,10 +66,10 @@ public class PortfolioAsset {
     public PortfolioAsset(){
     }
 
-    public PortfolioAsset(long portfolioId, String assetTicker, double averagePrice, int quantity) {
+    public PortfolioAsset(long portfolioId, String assetTicker, double price, int quantity) {
         this.portfolioId = portfolioId;
         this.assetTicker = assetTicker;
-        this.averagePrice = averagePrice;
+        this.price = price;
         this.quantity = quantity;
         this.dateCreated = System.currentTimeMillis() / 1000;
         this.dateModified = System.currentTimeMillis() / 1000;
@@ -78,11 +78,11 @@ public class PortfolioAsset {
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
     public PortfolioAsset merge(PortfolioAsset other) {
-        double thisAggregatePrice = this.averagePrice * this.quantity;
-        double otherAggregatePrice = other.getAveragePrice() * other.getQuantity();
+        double thisAggregatePrice = this.price * this.quantity;
+        double otherAggregatePrice = other.getPrice() * other.getQuantity();
         this.quantity += other.getQuantity();
-        this.averagePrice = (thisAggregatePrice + otherAggregatePrice) / this.quantity;
-        this.averagePrice = Math.round(this.averagePrice * 100.0) / 100.0;
+        this.price = (thisAggregatePrice + otherAggregatePrice) / this.quantity;
+        this.price = Math.round(this.price * 100.0) / 100.0;
         
         return this;
     }
