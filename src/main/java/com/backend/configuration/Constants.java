@@ -16,5 +16,6 @@ public final class Constants {
     public static final String MESSAGE_INVALIDHISTORICALCALL = "Incorrect request. Appropriate query parameters are 1week, 1month, 6month, 1year, 5year and all";
     public static final String MESSAGE_INVALIDPORTFOLIOID = "Portfolio id is missing";
     public static final String MESSAGE_INVALIDASSETID = "Asset id is missing";
+    public static final String MESSAGE_INVALIDASSETTICKER = "Asset ticker is missing";
     public static final String MESSAGE_MISSINGPORTFOLIOMETADATA = "Either portfolio name or description is required to update portfolio metadata";
 }

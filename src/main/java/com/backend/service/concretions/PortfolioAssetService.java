@@ -12,10 +12,13 @@ import com.backend.model.PortfolioAsset;
 import com.backend.repository.PortfolioAssetRepository;
 import com.backend.exception.PortfolioNotFoundException;
 import com.backend.exception.PortfolioAssetNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class PortfolioAssetService implements com.backend.service.abstractions.IPortfolioAssetService {
     private final PortfolioAssetRepository repository;
+    private static final Logger logger = LoggerFactory.getLogger(PortfolioAssetService.class);
 
     @Autowired
     public PortfolioAssetService(PortfolioAssetRepository repository) {
@@ -28,31 +31,53 @@ public class PortfolioAssetService implements com.backend.service.abstractions.I
     }
 
     @Override
-    public PortfolioAsset createNewPortfolioAsset(PortfolioAsset portfolioAsset){
+    public PortfolioAsset createNewPortfolioAsset(PortfolioAsset portfolioAsset) {
         return repository.save(portfolioAsset);
     }
 
     @Override
-    public List<PortfolioAsset> findAllByPortfolioId(long pid){
+    public List<PortfolioAsset> findAllByPortfolioId(long pid) {
         List<PortfolioAsset> portfolioAsset = repository.findAllByPortfolioId(pid);
 
-        if (portfolioAsset == null){
+        if (portfolioAsset == null) {
             throw new PortfolioNotFoundException(pid);
-        }
-        else
+        } else
             return portfolioAsset;
     }
 
     @Override
-    public PortfolioAsset findByPortfolioAssetId(long portfolioAssetId){
+    public PortfolioAsset findByPortfolioAssetId(long portfolioAssetId) {
         PortfolioAsset portfolioAsset = repository.findByPortfolioAssetId(portfolioAssetId);
 
-        if (portfolioAsset == null){
+        if (portfolioAsset == null) {
             throw new PortfolioAssetNotFoundException(portfolioAssetId);
-        }
-        else
+        } else
             return portfolioAsset;
     }
+
+    @Override
+    public List<PortfolioAsset> findByPortfolioIdAndAssetTicker(long pid, String ticker) {
+        logger.info("Searching for portfolio assets in portfolioID: {} and ticker: {}", pid, ticker);
+        List<PortfolioAsset> portfolioAssets = repository.findByPortfolioIdAndAssetTicker(pid, ticker);
+
+        if (portfolioAssets == null || portfolioAssets.isEmpty()) {
+            throw new PortfolioAssetNotFoundException(pid, ticker);
+        } else
+            return portfolioAssets;
+    }
+
+    @Override
+    public void deletePortfolioAsset(long pid, String ticker) {
+        List<PortfolioAsset> portfolioAssets = repository.findByPortfolioIdAndAssetTicker(pid, ticker);
+        for (PortfolioAsset portfolioAsset : portfolioAssets) {
+            if (portfolioAsset == null) {
+                throw new PortfolioAssetNotFoundException(pid, ticker);
+            } else {
+                repository.delete(portfolioAsset);
+            }
+        }
+    }
+
 
     @Override 
     public List<PortfolioAsset> aggregatePortfolioAssets(List<PortfolioAsset> portfolioAssetList) {

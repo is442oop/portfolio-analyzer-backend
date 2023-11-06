@@ -10,10 +10,10 @@ help:
 	@echo "  mvn    : Run the Maven project"
 	@echo "  help   : Show this help message"
 
-dev: up build mvn
+dev: up
 
 up:
-	docker compose -f ./.docker/docker-compose.yml up -d
+	docker compose -f ./.docker/docker-compose.yml up -d --build
 
 down:
 	docker compose -f ./.docker/docker-compose.yml down -v

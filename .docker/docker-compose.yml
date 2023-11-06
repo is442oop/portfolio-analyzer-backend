@@ -1,6 +1,13 @@
 version: "3"
+
+networks:
+  nw:
+    name: nw
+    driver: bridge
+
 services:
-  postgres:
+  db:
+    container_name: db
     image: postgres:latest
     ports:
       - 5432:5432
@@ -11,6 +18,24 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - nw
+  backend:
+    container_name: backend
+    build:
+      context: ..
+      dockerfile: ./.docker/backend/Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      APP_ENV: production
+      DB_URL: jdbc:postgresql://db:5432/postgres
+      DB_USER: dba
+      DB_PWD: changeme
+    networks:
+      - nw
 
 volumes:
   pg_data:
+    name: pg_data
