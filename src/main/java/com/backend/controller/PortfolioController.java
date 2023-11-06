@@ -192,7 +192,7 @@ public class PortfolioController {
 	@GetMapping(path = "/portfolio/assets/{pid}")
 	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable long pid) {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		if (portfolioAssetList == null) {
+		if (portfolioAssetList.isEmpty()) {
 			throw new PortfolioAssetNotFoundException(pid);
 		}
 
