@@ -194,16 +194,24 @@ public class PortfolioBalanceController {
             assetPriceMap.put(ticker, priceData);
             counter += 1;
         }
-        // System.out.println("assetPriceMap: " + assetPriceMap);
         executor.shutdown();
 
-        // Get qty of each stock for each day
         Map<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
-        // System.out.println();
-        // System.out.println("qtyMap: " + qtyMap);
-        double temp = 0;
+        Map<Long, Map<String, Integer>> qtyMapFiltered = new LinkedHashMap<>();
+        int count = 1;
         for (long dateEpoch : qtyMap.keySet()){
-            Map<String, Integer> assetQty = qtyMap.get(dateEpoch);
+            if (count>durationInt){
+                break;
+            }
+            qtyMapFiltered.put(dateEpoch, qtyMap.get(dateEpoch));
+            count +=1;
+        }
+        System.out.println("duration: " + durationInt);
+        System.out.println("qtyMapFiltered: " + qtyMapFiltered);
+
+        double temp = 0;
+        for (long dateEpoch : qtyMapFiltered.keySet()){
+            Map<String, Integer> assetQty = qtyMapFiltered.get(dateEpoch);
             double dailyBalance = 0;
             for (String ticker : assetQty.keySet()){
                 int qty = assetQty.get(ticker);
