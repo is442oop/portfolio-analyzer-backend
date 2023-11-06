@@ -152,7 +152,7 @@ public class PortfolioController {
 			throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
 		}
 		if (request.getAssetTicker() == null) {
-			throw new BadRequestException(Constants.MESSAGE_INVALIDASSETID);
+			throw new BadRequestException(Constants.MESSAGE_INVALIDASSETTICKER);
 		}
 
 		// Portfolio portfolio = restTemplate.exchange("http://localhost:8080/portfolio/"+request.getPortfolioId(), HttpMethod.GET, null, Portfolio.class).getBody();
@@ -160,13 +160,13 @@ public class PortfolioController {
 		
 		// logger.info("Adding " + request.getAssetId() + " to portfolio " + portfolio.getPid());
 		logger.info("New Portfolio Asset Ticker: " + request.getAssetTicker());
-		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
+		logger.info("New Portfolio Asset Average Price: " + request.getPrice());
 		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 		PortfolioAsset portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
 				new PortfolioAsset(
 						request.getPortfolioId(),
 						request.getAssetTicker(),
-						request.getAveragePrice(),
+						request.getPrice(),
 						request.getQuantity()));
 
 		java.util.Date time = new java.util.Date(portfolioAsset.getDateCreated() * 1000);
@@ -174,12 +174,12 @@ public class PortfolioController {
 		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse(); 
 
 		logger.info("Created on: " + time);
-		logger.info("New Portfolio Asset Average Price: " + request.getAveragePrice());
+		logger.info("New Portfolio Asset Average Price: " + request.getPrice());
 		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 
 		response.setAssetTicker(portfolioAsset.getAssetTicker());
 		response.setPortfolioId(portfolioAsset.getPortfolioId());
-		response.setAveragePrice(portfolioAsset.getAveragePrice());
+		response.setPrice(portfolioAsset.getPrice());
 		response.setQuantity(portfolioAsset.getQuantity());
 		response.setDateCreated(sdf.format(time));
 		response.setDateModified(sdf.format(time));
@@ -210,7 +210,7 @@ public class PortfolioController {
 			transaction.put("portfolioAssetId", asset.getPortfolioAssetId());
 			transaction.put("portfolioId", asset.getPortfolioId());
 			transaction.put("assetTicker", asset.getAssetTicker());
-			transaction.put("averagePrice", asset.getAveragePrice());
+			transaction.put("price", asset.getPrice());
 			transaction.put("quantity", asset.getQuantity());
 			transaction.put("dateCreated", asset.getDateCreatedStringMap().get("dateCreated"));
 			transaction.put("dateModified", asset.getDateModifiedStringMap().get("dateModified"));
