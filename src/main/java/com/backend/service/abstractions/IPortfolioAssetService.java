@@ -1,14 +1,19 @@
 package com.backend.service.abstractions;
 
-import java.util.List;
-
 import com.backend.model.PortfolioAsset;
+
+import java.util.List;
 
 public interface IPortfolioAssetService {
     List<PortfolioAsset> findAll();
+
     PortfolioAsset createNewPortfolioAsset(PortfolioAsset portfolioAsset);
+
     PortfolioAsset findByPortfolioAssetId(long PortfolioAssetId);
+
     List<PortfolioAsset> findAllByPortfolioId(long pid);
-    public void deletePortfolioAsset(long pid, String ticker);
-    public List<PortfolioAsset> findByPortfolioIdAndAssetTicker(long portfolioId, String assetTicker);
+
+    void deletePortfolioAsset(long pid, String ticker);
+
+    List<PortfolioAsset> findByPortfolioIdAndAssetTicker(long portfolioId, String assetTicker);
 }

@@ -1,5 +1,4 @@
 DROP SCHEMA IF EXISTS prod;
-DROP SEQUENCE IF EXISTS user_id_seq;
 DROP SEQUENCE IF EXISTS portfolio_id_seq;
 DROP SEQUENCE IF EXISTS asset_id_seq;
 DROP SEQUENCE IF EXISTS portfolio_asset_id_seq;
@@ -7,9 +6,6 @@ DROP SEQUENCE IF EXISTS asset_ref_data_id_seq;
 DROP TYPE IF EXISTS asset_types;
 
 CREATE SCHEMA prod;
-
--- Create the user_id_seq sequence
-CREATE SEQUENCE user_id_seq START 1;
 
 -- Create the portfolio_id_seq sequence
 CREATE SEQUENCE portfolio_id_seq START 1;
@@ -25,7 +21,7 @@ CREATE SEQUENCE asset_ref_data_id_seq START 1;
 
 -- Create the 'user' table under the 'prod' schema with the user_id_seq as the default value for the id column
 CREATE TABLE prod.user (
-    id BIGINT DEFAULT nextval('user_id_seq') PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     username VARCHAR(255),
     email VARCHAR(255)
 );
@@ -72,9 +68,9 @@ CREATE TABLE prod.portfolio_asset (
 -- );
 
 
-INSERT INTO prod.user (email, username) VALUES ('user1@example.com', 'user1');
-INSERT INTO prod.user (email, username) VALUES ('user2@example.com', 'user2');
-INSERT INTO prod.user (email, username) VALUES ('user3@example.com', 'user3');
+INSERT INTO prod.user (id, email, username) VALUES ('d988bdd8-e569-4026-970a-dd6c286ebe6d', 'test@test.com', 'user1');
+INSERT INTO prod.user (id, email, username) VALUES ('bfda515e-8e06-41c8-b157-56fc1b7ee301', 'test2@test.com', 'user2');
+INSERT INTO prod.user (id, email, username) VALUES ('a3c7dc58-4d0f-4fa3-9271-c851073d6371', 'test3@test.com', 'user3');
 
 
 INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (1, 'Flagship Portfolio', 'My companys flagship portfolio.');

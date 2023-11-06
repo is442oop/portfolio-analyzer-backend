@@ -2,15 +2,11 @@ package com.backend.model;
 
 import java.util.List;
 
-// import javax.sound.sampled.Port;
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.GenerationType;
 
 import lombok.Data;
 
@@ -21,8 +17,7 @@ import lombok.Data;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq") // convention: `{TABLE}_{COLUMN}_seq`
-    private Long id;
+    private String id;
     private String email;
     private String username;
 
@@ -32,7 +27,8 @@ public class User {
     protected User() {
     }
 
-    public User(String username, String email) {
+    public User(String id, String username, String email) {
+        this.id = id;
         this.username = username;
         this.email = email;
     }
