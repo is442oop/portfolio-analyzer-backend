@@ -233,7 +233,7 @@ public class PortfolioController {
 		}
 
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		if (portfolioAssetList == null) {
+		if (portfolioAssetList.isEmpty()) {
 			throw new PortfolioAssetNotFoundException();
 		}
 
@@ -273,7 +273,7 @@ public class PortfolioController {
 		}
 
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		if (portfolioAssetList == null) {
+		if (portfolioAssetList.isEmpty()) {
 			throw new PortfolioAssetNotFoundException();
 		}
 
