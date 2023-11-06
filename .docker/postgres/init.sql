@@ -93,11 +93,11 @@ INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_indus
 INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_industry, asset_type) VALUES ('NVDA', 'NVIDIA Corporation', 'NVIDIA Corporation is an American multinational technology company incorporated in Delaware and based in Santa Clara, California. The company primarily focuses on designing graphics processing units (GPUs) for gaming and professional markets, as well as system-on-chip units for the mobile computing and automotive market.', 'Technology', 'Stock');
 INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_industry, asset_type) VALUES ('NFLX', 'Netflix Inc', 'Netflix, Inc. is an American subscription-based streaming service that offers online streaming of films and television series. It is one of the most popular streaming platforms worldwide.', 'Entertainment', 'Stock');
 
-
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AAPL', 150.75, 10, 1699147279, 1699147279); 
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'GOOGL', 2750.50, 5, 1699060879, 1667059200);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'TSLA', 600.00, 15, 1699096879, 1699096879);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AMZN', 3300.25, 7, 1698405679, 1698405679);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AAPL', 150.75, 10, 1666972800, 1666972800);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AAPL', 130.75, 20, 1667972800, 1667972800);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'GOOGL', 2750.50, 5, 1666972800, 1667059200);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'TSLA', 600.00, 15, 1666972800, 1667145600);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AMZN', 3300.25, 7, 1667232000, 1667232000);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (2, 'FB', 330.75, 12, 1667318400, 1667318400); 
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'NVDA', 275.50, 8, 1699010479, 1699010479);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'NFLX', 530.40, 9, 1698595200, 1698595200);
