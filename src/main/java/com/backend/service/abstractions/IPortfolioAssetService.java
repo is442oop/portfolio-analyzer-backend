@@ -9,4 +9,5 @@ public interface IPortfolioAssetService {
     PortfolioAsset createNewPortfolioAsset(PortfolioAsset portfolioAsset);
     PortfolioAsset findByPortfolioAssetId(long PortfolioAssetId);
     List<PortfolioAsset> findAllByPortfolioId(long pid);
+    List<PortfolioAsset> aggregatePortfolioAssets(List<PortfolioAsset> portfolioAssetList);
 }
