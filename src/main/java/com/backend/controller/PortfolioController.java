@@ -193,7 +193,8 @@ public class PortfolioController {
 	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable long pid) {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
 		if (portfolioAssetList.isEmpty()) {
-			throw new PortfolioAssetNotFoundException(pid);
+			//here
+			throw new PortfolioNotFoundException();
 		}
 
 		Map<String, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
