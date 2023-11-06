@@ -97,6 +97,7 @@ INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_indus
 
 
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AAPL', 150.75, 10, 1666972800, 1666972800);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AAPL', 130.75, 20, 1667972800, 1667972800);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'GOOGL', 2750.50, 5, 1666972800, 1667059200);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'TSLA', 600.00, 15, 1666972800, 1667145600);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AMZN', 3300.25, 7, 1667232000, 1667232000);
