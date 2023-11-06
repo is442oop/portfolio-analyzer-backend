@@ -3,19 +3,13 @@ package com.backend.controller;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
-import java.util.TimeZone;
-import java.util.TreeMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.Collections;
-import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -23,20 +17,13 @@ import java.util.Map;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Map;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.antlr.v4.runtime.tree.Tree;
-import org.antlr.v4.runtime.tree.Tree;
 import org.apache.http.HttpResponse;
 
 import org.apache.http.client.HttpClient;
@@ -147,8 +134,6 @@ public class PortfolioBalanceController {
         HttpClient httpClient = HttpClients.createDefault();
         String tickerCleaned = ticker.replaceAll("\\s", "");
         String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&apikey=" + key + "&symbol=" + tickerCleaned;
-        String tickerCleaned = ticker.replaceAll("\\s", "");
-        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&apikey=" + key + "&symbol=" + tickerCleaned;
         HttpGet httpGet = new HttpGet(apiUrl);
         // Execute the GET request and get the response
         HttpResponse response = httpClient.execute(httpGet);
@@ -164,7 +149,6 @@ public class PortfolioBalanceController {
         Iterator<String> dateIterator = keys.iterator();
 
         LinkedHashMap<Long, Double> output = new LinkedHashMap<>();
-        LinkedHashMap<Long, Double> output = new LinkedHashMap<>();
 
         int counter = 0;
         while (dateIterator.hasNext()) {
@@ -175,14 +159,6 @@ public class PortfolioBalanceController {
             String dateClose = dateIterator.next();
             JsonObject priceDate = histPrices.getAsJsonObject(dateClose);
             double priceString = priceDate.get("5. adjusted close").getAsDouble();
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(dateClose);
-            long epoch = date.getTime() / 1000;
-
-            output.put(epoch, priceString);
-            double priceString = priceDate.get("5. adjusted close").getAsDouble();
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date date = sdf.parse(dateClose);
             long epoch = date.getTime() / 1000;
@@ -192,13 +168,6 @@ public class PortfolioBalanceController {
         return output;
     }
 
-
-    @GetMapping(path = "/portfolio/balance")
-    public GetPortfolioBalanceResponse getPortfolioBalance(@RequestParam("duration") String duration, @RequestParam("pid") int pid) throws Exception {
-        Map<String, Map<Long, Double>> assetPriceMap = new LinkedHashMap<>(); // Store daily adjusted close price for each asset
-        Map<Long, Double> output = new LinkedHashMap<>(); // Store qty of each asset for each day
-
-        List<String> tickers = getAssetTickerList(pid);
     @GetMapping(path = "/portfolio/balance")
     public GetPortfolioBalanceResponse getPortfolioBalance(@RequestParam("duration") String duration, @RequestParam("pid") int pid) throws Exception {
         Map<String, Map<Long, Double>> assetPriceMap = new LinkedHashMap<>(); // Store daily adjusted close price for each asset
