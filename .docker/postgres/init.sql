@@ -29,7 +29,7 @@ CREATE TABLE prod.user (
 --- Create the 'portfolio' table under the 'prod' schema with the portfolio_id_seq as the default value for the pid column
 CREATE TABLE prod.portfolio (
     pid BIGINT DEFAULT nextval('portfolio_id_seq') PRIMARY KEY,
-    user_id BIGINT REFERENCES prod.user(id),
+    user_id VARCHAR(36) REFERENCES prod.user(id),
     portfolio_name VARCHAR(255),
     description TEXT
 );
@@ -73,9 +73,9 @@ INSERT INTO prod.user (id, email, username) VALUES ('bfda515e-8e06-41c8-b157-56f
 INSERT INTO prod.user (id, email, username) VALUES ('a3c7dc58-4d0f-4fa3-9271-c851073d6371', 'test3@test.com', 'user3');
 
 
-INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (1, 'Flagship Portfolio', 'My companys flagship portfolio.');
-INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (2, 'ESG Portfolio', 'This is my ESG portfolio entry.');
-INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (2, 'SGX Portfolio', 'This is a special portfolio entry in Singapore!');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES ('d988bdd8-e569-4026-970a-dd6c286ebe6d', 'Flagship Portfolio', 'My companys flagship portfolio.');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES ('bfda515e-8e06-41c8-b157-56fc1b7ee301', 'ESG Portfolio', 'This is my ESG portfolio entry.');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES ('bfda515e-8e06-41c8-b157-56fc1b7ee301', 'SGX Portfolio', 'This is a special portfolio entry in Singapore!');
 
 
 INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_industry, asset_type) VALUES ('TSLA', 'Tesla Inc', 'Tesla, Inc. is an American electric vehicle and clean energy company based in Palo Alto, California. Teslas current products include electric cars, battery energy storage from home to grid-scale, solar panels and solar roof tiles, as well as other related products and services. In 2020, Tesla had the highest sales in the plug-in and battery electric passenger car segments, capturing 16% of the plug-in market (which includes plug-in hybrids) and 23% of the battery-electric (purely electric) market. Through its subsidiary Tesla Energy, the company develops and is a major installer of solar photovoltaic energy generation systems in the United States. Tesla Energy is also one of the largest global suppliers of battery energy storage systems, with 3 GWh of battery storage supplied in 2020.', 'Technology', 'Stock');
