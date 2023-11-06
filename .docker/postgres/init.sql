@@ -71,13 +71,14 @@ CREATE TABLE prod.portfolio_asset (
 --     adjusted_close_decimal DECIMAL NOT NULL
 -- );
 
-
-INSERT INTO prod.user (email, username) VALUES ('user1@example.com', 'user1');
+INSERT INTO prod.user (email, username) VALUES ('test@test.com', 'user1');
 INSERT INTO prod.user (email, username) VALUES ('user2@example.com', 'user2');
 INSERT INTO prod.user (email, username) VALUES ('user3@example.com', 'user3');
 
 
-INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (1, 'Flagship Portfolio', 'My companys flagship portfolio.');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (1, 'Flagship Portfolio', 'Multi-manager, multi-strategy equity fund focused on Asia.');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (1, 'China A-Shares Plus Fund', 'Quantitative long-only strategies in Chinese A-Shares');
+INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (1, 'Balanced Alternative Assets Fund', 'Designed to deliver protection for equity portfolios and generate high positive returns during market downtrends');
 INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (2, 'ESG Portfolio', 'This is my ESG portfolio entry.');
 INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES (2, 'SGX Portfolio', 'This is a special portfolio entry in Singapore!');
 
@@ -139,17 +140,17 @@ INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_indus
 
 
 
-
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'AAPL', 150.75, 10, 1666972800, 1666972800);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'AAPL', 130.75, 20, 1667972800, 1667972800);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'GOOGL', 2750.50, 5, 1666972800, 1667059200);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'TSLA', 600.00, 15, 1666972800, 1667145600);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'AMZN', 3300.25, 7, 1667232000, 1667232000);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (2, 'META', 330.75, 12, 1667318400, 1667318400); 
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (2, 'FB', 330.75, 12, 1667318400, 1667318400); 
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'NVDA', 275.50, 8, 1667404800, 1667404800);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'NFLX', 530.40, 9, 1667491200, 1667491200);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (2, 'AAPL', 150.75, 5, 1667577600, 1667577600);
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (3, 'GOOGL', 2750.50, 10, 1667664000, 1667664000);
+
 
 
 -- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'TSLA', 100.50, 10, 1643121600, 1643121600);
