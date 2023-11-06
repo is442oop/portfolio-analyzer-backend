@@ -50,14 +50,14 @@ public class PortfolioController {
 	Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 	private final IPortfolioService portfolioService;
 	private final IPortfolioAssetService portfolioAssetService;
-	private final IAssetService assetService;
+	// private final IAssetService assetService;
 
 	@Autowired
 	public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService,
 			IAssetService assetService) {
 		this.portfolioService = portfolioService;
 		this.portfolioAssetService = portfolioAssetService;
-		this.assetService = assetService;
+		// this.assetService = assetService;
 	}
 
 	@GetMapping(path = "/portfolio")
@@ -192,6 +192,10 @@ public class PortfolioController {
 	@GetMapping(path = "/portfolio/assets/{pid}")
 	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable long pid) {
 		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+		if (portfolioAssetList == null) {
+			throw new PortfolioAssetNotFoundException(pid);
+		}
+
 		Map<String, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
 				.collect(Collectors.groupingBy(e -> e.getAssetTicker(), Collectors.collectingAndThen(
 						Collectors.toList(),
