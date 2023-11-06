@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.antlr.v4.runtime.tree.Tree;
 import org.apache.http.HttpResponse;
 
 import org.apache.http.client.HttpClient;
@@ -95,7 +97,6 @@ public class PortfolioBalanceController {
 
             epochMap.put(roundEpochToCurrentDay(dateAdded), portfolioAsset);            
         }
-
         for (long epochDate : epochMap.keySet()){
             PortfolioAsset portfolioAsset = epochMap.get(epochDate);
             String ticker = portfolioAsset.getAssetTicker().replaceAll("\\s", "");
@@ -112,8 +113,12 @@ public class PortfolioBalanceController {
         if (!output.containsKey(sevenDaysAgoEpochTime)){
             sevenDaysAgoEpochTime = output.firstKey();
         }
+        System.out.println("first date in output: " + sevenDaysAgoEpochTime);
+        System.out.println();
+        System.out.println(output);
         Map<String, Integer> temp = output.get(output.firstKey());
         for (long epochTime = sevenDaysAgoEpochTime; epochTime <= yesterdayEpochTime; epochTime += 86400){
+            System.out.println("epochTime: " + epochTime);
             if (!output.containsKey(epochTime)){
                 output.put(epochTime, temp);
             }
@@ -122,7 +127,8 @@ public class PortfolioBalanceController {
                 output.put(epochTime, temp);
             }
         }
-
+        System.out.println();
+        System.out.println("OUTPUT : " + output);
         return output;
     }
 
@@ -196,22 +202,24 @@ public class PortfolioBalanceController {
         }
         executor.shutdown();
 
-        Map<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
-        Map<Long, Map<String, Integer>> qtyMapFiltered = new LinkedHashMap<>();
-        int count = 1;
-        for (long dateEpoch : qtyMap.keySet()){
-            if (count>durationInt){
+        TreeMap<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
+        TreeMap<Long, Map<String, Integer>> sortedQtyMap = new TreeMap<>(Collections.reverseOrder());
+        TreeMap<Long, Map<String, Integer>> finalQtyMap = new TreeMap<>();
+        sortedQtyMap.putAll(qtyMap);
+        System.out.println(sortedQtyMap);
+
+        int i = 0;
+        for (long epoch : sortedQtyMap.keySet()){
+            if (i==durationInt){
                 break;
             }
-            qtyMapFiltered.put(dateEpoch, qtyMap.get(dateEpoch));
-            count +=1;
+            finalQtyMap.put(epoch, sortedQtyMap.get(epoch));
+            i += 1;
         }
-        System.out.println("duration: " + durationInt);
-        System.out.println("qtyMapFiltered: " + qtyMapFiltered);
 
         double temp = 0;
-        for (long dateEpoch : qtyMapFiltered.keySet()){
-            Map<String, Integer> assetQty = qtyMapFiltered.get(dateEpoch);
+        for (long dateEpoch : finalQtyMap.keySet()){
+            Map<String, Integer> assetQty = finalQtyMap.get(dateEpoch);
             double dailyBalance = 0;
             for (String ticker : assetQty.keySet()){
                 int qty = assetQty.get(ticker);
