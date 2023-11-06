@@ -39,7 +39,7 @@ CREATE TYPE asset_types AS ENUM ('Stock', 'ETF');
 --- Create the 'asset' table under the 'prod' schema with the asset_id_seq as the default value for the pid column
 CREATE TABLE prod.asset (
     -- asset_id BIGINT DEFAULT nextval('asset_id_seq') PRIMARY KEY,
-    asset_ticker CHAR(15) NOT NULL PRIMARY KEY,
+    asset_ticker VARCHAR(15) NOT NULL PRIMARY KEY,
     asset_name VARCHAR(255) NOT NULL,
     asset_description TEXT NOT NULL ,
     asset_industry VARCHAR(255) NOT NULL,
@@ -51,8 +51,8 @@ CREATE TABLE prod.portfolio_asset (
     portfolio_asset_id BIGINT DEFAULT nextval('portfolio_asset_id_seq') PRIMARY KEY,
     portfolio_id BIGINT NOT NULL REFERENCES prod.portfolio(pid),
     -- asset_id BIGINT NOT NULL  REFERENCES prod.asset(asset_id),
-    asset_ticker CHAR(15) NOT NULL REFERENCES prod.asset(asset_ticker),
-    average_price_decimal DECIMAL NOT NULL,
+    asset_ticker VARCHAR(15) NOT NULL REFERENCES prod.asset(asset_ticker),
+    price DECIMAL NOT NULL,
     quantity INT NOT NULL,
     date_created  INT NOT NULL DEFAULT extract(epoch from now()),
     date_modified INT NOT NULL DEFAULT extract(epoch from now())
@@ -67,7 +67,6 @@ CREATE TABLE prod.portfolio_asset (
 --     adjusted_close_decimal DECIMAL NOT NULL
 -- );
 
-
 INSERT INTO prod.user (id, email, username) VALUES ('d988bdd8-e569-4026-970a-dd6c286ebe6d', 'test@test.com', 'user1');
 INSERT INTO prod.user (id, email, username) VALUES ('bfda515e-8e06-41c8-b157-56fc1b7ee301', 'test2@test.com', 'user2');
 INSERT INTO prod.user (id, email, username) VALUES ('a3c7dc58-4d0f-4fa3-9271-c851073d6371', 'test3@test.com', 'user3');
@@ -76,7 +75,6 @@ INSERT INTO prod.user (id, email, username) VALUES ('a3c7dc58-4d0f-4fa3-9271-c85
 INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES ('d988bdd8-e569-4026-970a-dd6c286ebe6d', 'Flagship Portfolio', 'My companys flagship portfolio.');
 INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES ('bfda515e-8e06-41c8-b157-56fc1b7ee301', 'ESG Portfolio', 'This is my ESG portfolio entry.');
 INSERT INTO prod.portfolio (user_id, portfolio_name, description) VALUES ('bfda515e-8e06-41c8-b157-56fc1b7ee301', 'SGX Portfolio', 'This is a special portfolio entry in Singapore!');
-
 
 INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_industry, asset_type) VALUES ('TSLA', 'Tesla Inc', 'Tesla, Inc. is an American electric vehicle and clean energy company based in Palo Alto, California. Teslas current products include electric cars, battery energy storage from home to grid-scale, solar panels and solar roof tiles, as well as other related products and services. In 2020, Tesla had the highest sales in the plug-in and battery electric passenger car segments, capturing 16% of the plug-in market (which includes plug-in hybrids) and 23% of the battery-electric (purely electric) market. Through its subsidiary Tesla Energy, the company develops and is a major installer of solar photovoltaic energy generation systems in the United States. Tesla Energy is also one of the largest global suppliers of battery energy storage systems, with 3 GWh of battery storage supplied in 2020.', 'Technology', 'Stock');
 INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_industry, asset_type) VALUES ('SPY', 'SPDR S&P 500 ETF Trust', 'SPDR S&P 500 ETF Trust', 'Finance', 'ETF');
@@ -91,21 +89,21 @@ INSERT INTO prod.asset (asset_ticker, asset_name, asset_description, asset_indus
 
 
 
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'AAPL', 150.75, 10, 1666972800, 1666972800);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'AAPL', 130.75, 20, 1667972800, 1667972800);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'GOOGL', 2750.50, 5, 1666972800, 1667059200);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'TSLA', 600.00, 15, 1666972800, 1667145600);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'AMZN', 3300.25, 7, 1667232000, 1667232000);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (2, 'FB', 330.75, 12, 1667318400, 1667318400); 
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'NVDA', 275.50, 8, 1667404800, 1667404800);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'NFLX', 530.40, 9, 1667491200, 1667491200);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (2, 'AAPL', 150.75, 5, 1667577600, 1667577600);
+INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (3, 'GOOGL', 2750.50, 10, 1667664000, 1667664000);
 
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AAPL', 150.75, 10, 1666972800, 1666972800);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AAPL', 130.75, 20, 1667972800, 1667972800);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'GOOGL', 2750.50, 5, 1666972800, 1667059200);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'TSLA', 600.00, 15, 1666972800, 1667145600);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'AMZN', 3300.25, 7, 1667232000, 1667232000);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (2, 'FB', 330.75, 12, 1667318400, 1667318400); 
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'NVDA', 275.50, 8, 1667404800, 1667404800);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'NFLX', 530.40, 9, 1667491200, 1667491200);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (2, 'AAPL', 150.75, 5, 1667577600, 1667577600);
-INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (3, 'GOOGL', 2750.50, 10, 1667664000, 1667664000);
 
 
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'TSLA', 100.50, 10, 1643121600, 1643121600);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (2, 'QQQ', 75.25, 20);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (2, 'MSFT', 50.75, 15);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (1, 'GOOGL', 120.00, 5);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'MSFT', 90.25, 8, 1668316800, 1668316800);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'TSLA', 100.50, 10, 1643121600, 1643121600);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity) VALUES (2, 'QQQ', 75.25, 20);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity) VALUES (2, 'MSFT', 50.75, 15);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity) VALUES (1, 'GOOGL', 120.00, 5);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'MSFT', 90.25, 8, 1668316800, 1668316800);
