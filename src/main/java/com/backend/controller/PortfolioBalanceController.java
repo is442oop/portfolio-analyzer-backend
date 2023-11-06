@@ -201,7 +201,7 @@ public class PortfolioBalanceController {
         Map<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
         // System.out.println();
         // System.out.println("qtyMap: " + qtyMap);
-
+        double temp = 0;
         for (long dateEpoch : qtyMap.keySet()){
             Map<String, Integer> assetQty = qtyMap.get(dateEpoch);
             double dailyBalance = 0;
@@ -211,6 +211,12 @@ public class PortfolioBalanceController {
                     double price = assetPriceMap.get(ticker).get(dateEpoch);
                     dailyBalance += qty * price;
                 }
+            }
+            if (dailyBalance == 0){
+                dailyBalance = temp;
+            }
+            else{
+            temp = dailyBalance;
             }
             output.put(dateEpoch, dailyBalance);
         }
