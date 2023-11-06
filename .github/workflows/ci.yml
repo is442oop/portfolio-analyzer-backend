@@ -17,11 +17,6 @@ jobs:
           java-version: "17"
           cache: "maven"
       - name: Setup postgres environment
-        run: docker compose -f ./.docker/docker-compose.yml up -d
+        run: docker compose -f ./.docker/docker-compose.yml up -d db
       - name: Build project with Maven
-        env:
-          APP_ENV: production
-          DB_URL: jdbc:postgresql://db:5432/postgres
-          DB_USER: dba
-          DB_PWD: changeme
         run: mvn -B package --file pom.xml
