@@ -1,9 +1,10 @@
 package com.backend.response;
 
 import lombok.Data;
-import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
 
 @Data
 public class GetPortfolioBalanceResponse {
-    private Map<Long, Double> dailyBalance;
+    private List<HashMap<String, Object>> portfolioHistoryData;
 }

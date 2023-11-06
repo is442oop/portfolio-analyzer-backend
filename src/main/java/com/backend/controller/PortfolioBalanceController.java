@@ -1,6 +1,7 @@
 package com.backend.controller;
 
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -237,8 +238,26 @@ public class PortfolioBalanceController {
             output.put(dateEpoch, dailyBalance);
         }
 
+
+        List<HashMap<String, Object>> portfolioHistoryData = new ArrayList<>();
+        for (long epoch : output.keySet()){
+            HashMap<String, Object> tempMap = new HashMap<>();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+            Date dateEpoch = new Date(epoch * 1000);
+            System.out.println("epoch: " + epoch);
+            String dateStr = sdf.format(dateEpoch);
+
+            System.out.println("dateStr: " + dateStr);
+
+            tempMap.put("date", dateStr);
+            tempMap.put("balance", output.get(epoch));
+            portfolioHistoryData.add(tempMap);
+        }
+
         GetPortfolioBalanceResponse response = new GetPortfolioBalanceResponse();
-        response.setDailyBalance(output);
+        response.setPortfolioHistoryData(portfolioHistoryData);
 
         return response;
     }
