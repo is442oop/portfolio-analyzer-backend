@@ -25,12 +25,10 @@ GOTO :EOF
 
 :DEV
 call :UP
-call :BUILD
-call :MVN
 GOTO :EOF
 
 :UP
-CALL docker compose -f ./.docker/docker-compose.yml up -d
+CALL docker compose -f ./.docker/docker-compose.yml up -d --build
 GOTO :EOF
 
 :DOWN
