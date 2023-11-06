@@ -43,7 +43,7 @@ CREATE TYPE asset_types AS ENUM ('Stock', 'ETF');
 --- Create the 'asset' table under the 'prod' schema with the asset_id_seq as the default value for the pid column
 CREATE TABLE prod.asset (
     -- asset_id BIGINT DEFAULT nextval('asset_id_seq') PRIMARY KEY,
-    asset_ticker CHAR(15) NOT NULL PRIMARY KEY,
+    asset_ticker VARCHAR(15) NOT NULL PRIMARY KEY,
     asset_name VARCHAR(255) NOT NULL,
     asset_description TEXT NOT NULL ,
     asset_industry VARCHAR(255) NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE prod.portfolio_asset (
     portfolio_id BIGINT NOT NULL REFERENCES prod.portfolio(pid),
     -- asset_id BIGINT NOT NULL  REFERENCES prod.asset(asset_id),
     asset_ticker CHAR(15) NOT NULL REFERENCES prod.asset(asset_ticker),
-    average_price_decimal DECIMAL NOT NULL,
+    price DECIMAL NOT NULL,
     quantity INT NOT NULL,
     date_created  INT NOT NULL DEFAULT extract(epoch from now()),
     date_modified INT NOT NULL DEFAULT extract(epoch from now())
