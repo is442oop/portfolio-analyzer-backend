@@ -37,6 +37,9 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
+import io.github.cdimascio.dotenv.Dotenv;
+
 import com.backend.model.PortfolioAsset;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.response.GetPortfolioBalanceResponse;
@@ -80,7 +83,7 @@ public class PortfolioBalanceController {
         return updatedEpochTime;
     }
 
-    public TreeMap<Long, Map<String, Integer>> getHistoricalQty(int pid){
+    public TreeMap<Long, Map<String, Integer>> getHistoricalQty(long pid){
         TreeMap<Long, Map<String, Integer>> output = new TreeMap<>();
         
         Map<String, Integer> assetTruth = new HashMap<>();
@@ -114,12 +117,9 @@ public class PortfolioBalanceController {
         if (!output.containsKey(sevenDaysAgoEpochTime)){
             sevenDaysAgoEpochTime = output.firstKey();
         }
-        System.out.println("first date in output: " + sevenDaysAgoEpochTime);
-        System.out.println();
-        System.out.println(output);
+
         Map<String, Integer> temp = output.get(output.firstKey());
         for (long epochTime = sevenDaysAgoEpochTime; epochTime <= yesterdayEpochTime; epochTime += 86400){
-            System.out.println("epochTime: " + epochTime);
             if (!output.containsKey(epochTime)){
                 output.put(epochTime, temp);
             }
@@ -128,8 +128,6 @@ public class PortfolioBalanceController {
                 output.put(epochTime, temp);
             }
         }
-        System.out.println();
-        System.out.println("OUTPUT : " + output);
         return output;
     }
 
@@ -184,9 +182,13 @@ public class PortfolioBalanceController {
         ExecutorService executor = Executors.newFixedThreadPool(10);
         List<Callable<Map<Long, Double>>> tasks = new ArrayList<>();
 
+        Dotenv dotenv = Dotenv.configure().load();
+        String apikey = dotenv.get("APIKEY");
+        System.out.println("API: " + apikey);
+
         for (String ticker : tickers) {
             Callable<Map<Long, Double>> task = () -> {
-                Map<Long, Double> priceData = getHistoricalPrice(ticker, "AJ3EONYVGOHPWZPC", durationInt);
+                Map<Long, Double> priceData = getHistoricalPrice(ticker, apikey, durationInt);
                 return priceData;
             };
             tasks.add(task);
@@ -207,7 +209,6 @@ public class PortfolioBalanceController {
         TreeMap<Long, Map<String, Integer>> sortedQtyMap = new TreeMap<>(Collections.reverseOrder());
         TreeMap<Long, Map<String, Integer>> finalQtyMap = new TreeMap<>();
         sortedQtyMap.putAll(qtyMap);
-        System.out.println(sortedQtyMap);
 
         int i = 0;
         for (long epoch : sortedQtyMap.keySet()){
@@ -246,10 +247,8 @@ public class PortfolioBalanceController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
             Date dateEpoch = new Date(epoch * 1000);
-            System.out.println("epoch: " + epoch);
             String dateStr = sdf.format(dateEpoch);
 
-            System.out.println("dateStr: " + dateStr);
 
             tempMap.put("date", dateStr);
             tempMap.put("balance", output.get(epoch));
