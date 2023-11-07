@@ -1,12 +1,18 @@
 package com.backend.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import javax.swing.event.InternalFrameAdapter;
 
 import com.backend.exception.BadCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.handler.IgnoreErrorsBindHandler;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.configuration.Constants;
 import com.backend.exception.BadRequestException;
+import com.backend.exception.PortfolioNotFoundException;
+import com.backend.model.Asset;
 import com.backend.model.Portfolio;
+import com.backend.model.PortfolioAsset;
 import com.backend.model.User;
 import com.backend.request.CreateUserRequest;
 import com.backend.response.CreateUserResponse;
 import com.backend.response.FindAllUsersResponse;
 import com.backend.response.FindUserPortfolios;
 import com.backend.response.FindUserResponse;
+import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.service.abstractions.IUserService;
 
 @RestController
@@ -32,10 +42,12 @@ public class UserController {
     Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final IUserService userService;
+	private final IPortfolioAssetService portfolioAssetService;
 
     @Autowired
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, IPortfolioAssetService portfolioAssetService) {
         this.userService = userService;
+        this.portfolioAssetService = portfolioAssetService;
     }
 
     @GetMapping("/users")
@@ -112,7 +124,71 @@ public class UserController {
 
         return response;
     
+    }
 
+    @GetMapping("/users/{id}/portfolios/allocation")
+    public List<Map<String, Object>> getAllocationAcrossUserPortfolios(@PathVariable String id) {
+            logger.info("Finding user " + id + " portfolio");
+            List<Portfolio> portfolios = userService.findUserPortfolios(id);
+            if (portfolios.isEmpty()) {
+                throw new PortfolioNotFoundException();
+            }
+            
+            List<List<PortfolioAsset>> listOfAggregatedPortfolioAssetList = new ArrayList<>();
+
+            for (Portfolio portfolio : portfolios) {
+                long pid = portfolio.getPid();
+                List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+                List<PortfolioAsset> aggregatedPortfolioAssetList = portfolioAssetService.aggregatePortfolioAssets(portfolioAssetList);
+                listOfAggregatedPortfolioAssetList.add(aggregatedPortfolioAssetList);
+
+            }
+            Map<String, Integer> industryMap = new HashMap<>();
+            int totalQuantity = 0;
+
+            for(List<PortfolioAsset> aggregatedPortfolioAssetList : listOfAggregatedPortfolioAssetList) {
+                for(PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
+                    Asset asset = aggregatedPortfolioAsset.getAsset();
+                    int aggregatedQuantity = aggregatedPortfolioAsset.getQuantity();
+                    String industry = asset.getAssetIndustry();
+                    totalQuantity += aggregatedQuantity;
+
+                    if (!(industryMap.containsKey(industry))) {
+                        industryMap.put(industry, aggregatedQuantity);
+                    } else {
+                        int updatedQuantity = industryMap.get(industry);
+                        updatedQuantity += aggregatedQuantity;
+                        industryMap.put(industry, updatedQuantity);
+                    }
+                }
+            }
+
+            System.out.println(industryMap);
+		    List<Map<String, Object>> percentageByIndustry = new ArrayList<>();
+		    for (Map.Entry<String, Integer> element : industryMap.entrySet()) {
+			    String industry = element.getKey();
+			    Integer quantity = element.getValue();
+			    float percentage = (float) quantity / totalQuantity;
+
+			    Map<String, Object> allocation = new HashMap<>();
+                allocation.put("industry", industry);
+                allocation.put("percentage", percentage);
+                percentageByIndustry.add(allocation);
+		    }
+
+            return percentageByIndustry;
+
+        //     List<List<PortfolioAsset>> returnList = new ArrayList<>();
+            
+        //     for(Portfolio portfolio : portfolios) {
+        //         System.out.println("portfolio" + portfolio);
+        //         long pid = portfolio.getPid();
+        //         List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+        //         returnList.add(portfolioAssetList);
+        //     }
+
+        
+        // return returnList;
     }
 
 }
