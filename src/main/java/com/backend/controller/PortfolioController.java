@@ -357,7 +357,7 @@ public class PortfolioController {
 			}
 		}
 		GetAllPortfolioAssetsByUserResponse response = new GetAllPortfolioAssetsByUserResponse();
-		response.setAssetList(output); 
+		response.setPortfolioAssetList(output); 
 		return response;
 	}
 
