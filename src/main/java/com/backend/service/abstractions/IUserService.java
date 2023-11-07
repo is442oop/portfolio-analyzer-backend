@@ -10,8 +10,9 @@ public interface IUserService {
     User createNewUser(User user);
     User findByUserName(String username);
     User findByEmail(String email);
+    boolean isUserIdExist(String id);
     boolean isUsernameExist(String username);
     boolean isEmailExist(String email);
-    User findById(long id);
-    List<Portfolio> findUserPortfolios(long id);
+    User findById(String id);
+    List<Portfolio> findUserPortfolios(String id);
 }

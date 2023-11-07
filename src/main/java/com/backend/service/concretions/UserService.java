@@ -34,7 +34,7 @@ public class UserService implements com.backend.service.abstractions.IUserServic
         User user = repository.findByUsername(username);
 
         if (user == null)
-            throw new UserNotFoundException(username);
+            throw new UserNotFoundException("with username: " +username);
         else
             return user;
     }
@@ -50,6 +50,12 @@ public class UserService implements com.backend.service.abstractions.IUserServic
     }
 
     @Override
+    public boolean isUserIdExist(String id) {
+        User user = repository.findById(id);
+        return user != null;
+    }
+
+    @Override
     public boolean isUsernameExist(String username) {
         User user = repository.findByUsername(username);
         return user != null;
@@ -62,20 +68,20 @@ public class UserService implements com.backend.service.abstractions.IUserServic
     }
 
     @Override 
-    public User findById(long id) {
+    public User findById(String id) {
         User user = repository.findById(id);
         if (user == null) {
-            throw new UserNotFoundException(id);
+            throw new UserNotFoundException("with id: " +id);
         } else {
             return user;
         }
     }
 
     @Override
-    public List<Portfolio> findUserPortfolios(long id) {
+    public List<Portfolio> findUserPortfolios(String id) {
         User user = repository.findById(id);
         if (user == null) {
-            throw new UserNotFoundException(id);
+            throw new UserNotFoundException("with id: " +id);
         } else {
             return user.getPortfolios();
         }

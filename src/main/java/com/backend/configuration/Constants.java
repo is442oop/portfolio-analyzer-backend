@@ -7,8 +7,10 @@ public final class Constants {
 
     public static final String MAIN_CURRENCY = "SGD";
 
+    public static final String MESSAGE_MALFORMEDREQUEST = "Invalid request body or parameters.";
     public static final String MESSAGE_INVALIDUSERNAME = "Invalid username.";
     public static final String MESSAGE_INVALIDEMAIL = "Invalid email.";
+    public static final String MESSAGE_SAMEUSEREXIST = "User already exists";
     public static final String MESSAGE_SAMEUSERNAMEEXIST = "User with the same name exists.";
     public static final String MESSAGE_SAMEEMAILEXIST = "User with the same email exists.";
     public static final String MESSAGE_MISSINGPORTFOLIONAME = "Portfolio name is missing.";
