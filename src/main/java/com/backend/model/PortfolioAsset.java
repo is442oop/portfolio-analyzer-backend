@@ -1,8 +1,8 @@
 package com.backend.model;
 
 import lombok.Data;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
+// import java.math.RoundingMode;
+// import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -75,7 +75,7 @@ public class PortfolioAsset {
         this.dateModified = System.currentTimeMillis() / 1000;
     }
 
-    private static final DecimalFormat df = new DecimalFormat("0.00");
+    // private static final DecimalFormat df = new DecimalFormat("0.00");
 
     public PortfolioAsset merge(PortfolioAsset other) {
         double thisAggregatePrice = this.price * this.quantity;

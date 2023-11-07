@@ -8,7 +8,7 @@ public interface IWatchlistService {
 
     List<Watchlist> findAll();
     Watchlist findByWid(long id);
-    Watchlist findById(String id);
+    Watchlist findByUid(String id);
     void updateWatchlist(Watchlist watchlist);
     // void clearWatchlist(Watchlist watchlist);
     Watchlist createWatchlist(Watchlist watchlist);

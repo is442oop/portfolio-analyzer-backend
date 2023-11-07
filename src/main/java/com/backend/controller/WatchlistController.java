@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 
-import com.backend.exception.PortfolioAssetNotFoundException;
+// import com.backend.exception.PortfolioAssetNotFoundException;
 import com.backend.configuration.Constants;
 import com.backend.exception.BadRequestException;
-import com.backend.exception.WatchlistNotFoundException;
+// import com.backend.exception.WatchlistNotFoundException;
 // import com.backend.model.Portfolio;
 // import com.backend.model.Portfolio;
 // import com.backend.model.Asset;
@@ -43,7 +43,7 @@ public class WatchlistController {
     public CreateWatchlistResponse createWatchlist(@RequestBody CreateWatchlistRequest request) {
 
 		if (request.getWatchlist_assets() == null || request.getUserId()==null || request.getUserId().isEmpty()) {
-			throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIODESC);
+			throw new BadRequestException(Constants.MESSAGE_MISSINGWATCHLISTDATA);
 		}
 
 		logger.info("Beginning creation of new watchlist with the following details");
@@ -69,8 +69,8 @@ public class WatchlistController {
     //     return watchlistService.getAllWatchlists();
     // }
 
-    @GetMapping(path = "/watchlist/{wid}")
-    public GetWatchlistByIdResponse getWatchlist(@PathVariable long wid) {
+    @GetMapping(path = "/watchlist/wid/{wid}")
+    public GetWatchlistByIdResponse getWatchlistByWid(@PathVariable long wid) {
     Watchlist watchlist = watchlistService.findByWid(wid);
 
 	// if (watchlist == null) {
@@ -84,8 +84,23 @@ public class WatchlistController {
     return response;
     }
 
+	@GetMapping(path = "/watchlist/user/{uid}")
+    public GetWatchlistByIdResponse getWatchlistByUid(@PathVariable String uid) {
+    Watchlist watchlist = watchlistService.findByUid(uid);
 
-    @PutMapping(path = "/watchlist/{wid}/add")
+	// if (watchlist == null) {
+	// 		throw new WatchlistNotFoundException(wid);
+	// 	}
+    GetWatchlistByIdResponse response = new GetWatchlistByIdResponse();
+    response.setUserId(watchlist.getUid());
+    response.setWatchlistId(watchlist.getWid());
+    response.setWatchlist_assets(watchlist.getAssets());
+
+    return response;
+    }
+
+
+    @PutMapping(path = "/watchlist/wid/{wid}/add")
 	public UpdateWatchlistAssetsResponse addAssetToWatchlist(@PathVariable long wid,
 			@RequestBody UpdateWatchlistAssetsRequest body) {
 		Watchlist watchlist = watchlistService.findByWid(wid);
@@ -96,10 +111,45 @@ public class WatchlistController {
 		logger.info("Watchlist ID: " + wid);
 		logger.info("New Asset Name: " + body.getWatchlist_asset());
 
-		String asset = body.getWatchlist_asset();
+		List<String> asset = body.getWatchlist_asset();
         List<String> assets = watchlist.getAssets();
-        assets.add(asset);
-	
+		
+		for (String a : asset) {
+			assets.add(a);
+		}
+
+		if (asset != null && !asset.isEmpty()) {
+			watchlist.setAssets(assets);
+		}
+
+		watchlistService.updateWatchlist(watchlist);
+
+		logger.info("Watchlist updated successfully");
+
+		UpdateWatchlistAssetsResponse response = new UpdateWatchlistAssetsResponse();
+		response.setWatchlist_assets(watchlist.getAssets());
+
+		return response;
+	}
+
+	@PutMapping(path = "/watchlist/user/{uid}/add")
+	public UpdateWatchlistAssetsResponse addAssetToWatchlist(@PathVariable String uid,
+			@RequestBody UpdateWatchlistAssetsRequest body) {
+		Watchlist watchlist = watchlistService.findByUid(uid);
+		// if (watchlist == null) {
+		// 	throw new PortfolioAssetNotFoundException(id);
+		// }
+		logger.info("Beginning update of watchlist with the following details");
+		logger.info("Watchlist ID: " + uid);
+		logger.info("New Asset Name: " + body.getWatchlist_asset());
+
+		List<String> asset = body.getWatchlist_asset();
+        List<String> assets = watchlist.getAssets();
+		
+		for (String a : asset) {
+			assets.add(a);
+		}
+
 		if (asset != null && !asset.isEmpty()) {
 			watchlist.setAssets(assets);
 		}
@@ -124,6 +174,36 @@ public class WatchlistController {
 
         logger.info("Beginning update of watchlist with the following details");
 		logger.info("Watchlist ID: " + wid);
+		logger.info("New Asset Name: " + body.getWatchlist_asset());
+
+        String asset = body.getWatchlist_asset();
+        List<String> assets = watchlist.getAssets();
+        assets.remove(asset);
+
+        if (asset != null && !asset.isEmpty()) {
+			watchlist.setAssets(assets);
+		}
+
+        watchlistService.updateWatchlist(watchlist);
+
+        logger.info("Watchlist updated successfully");
+
+        RemoveWatchlistAssetResponse response = new RemoveWatchlistAssetResponse();
+		response.setWatchlist_assets(watchlist.getAssets());
+
+                return response;
+            }
+
+	@PutMapping(path = "/watchlist/user/{uid}/remove")
+    public RemoveWatchlistAssetResponse removeAssetFromWatchlist(@PathVariable String uid,
+			@RequestBody RemoveWatchlistAssetRequest body) {
+                Watchlist watchlist = watchlistService.findByUid(uid);
+        //         if (watchlist == null) {
+		// 	throw new PortfolioAssetNotFoundException(id);
+		// }
+
+        logger.info("Beginning update of watchlist with the following details");
+		logger.info("Watchlist ID: " + uid);
 		logger.info("New Asset Name: " + body.getWatchlist_asset());
 
         String asset = body.getWatchlist_asset();

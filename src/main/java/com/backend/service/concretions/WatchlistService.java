@@ -1,6 +1,6 @@
 package com.backend.service.concretions;
 
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,8 @@ public class WatchlistService implements com.backend.service.abstractions.IWatch
     }
 
     @Override
-    public Watchlist findById(String id) {
-        Watchlist watchlist = repository.findByUid(id);
+    public Watchlist findByUid(String uid) {
+        Watchlist watchlist = repository.findByUid(uid);
         // .orElseThrow(() -> new ResourceNotFoundException("Watchlist not found with id " + id));
         return watchlist;
     }    
