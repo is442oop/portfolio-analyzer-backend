@@ -1,6 +1,5 @@
 package com.backend.controller;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.ArrayList;
@@ -43,339 +42,334 @@ import com.backend.service.abstractions.IPortfolioService;
 import com.backend.service.abstractions.IUserService;
 import com.backend.request.DeletePortfolioAssetRequest;
 
-
 @RestController
 @RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 public class PortfolioController {
-	Logger logger = LoggerFactory.getLogger(PortfolioController.class);
-	private final IPortfolioService portfolioService;
-	private final IPortfolioAssetService portfolioAssetService;
-	private final IUserService userService;
+    Logger logger = LoggerFactory.getLogger(PortfolioController.class);
+    private final IPortfolioService portfolioService;
+    private final IPortfolioAssetService portfolioAssetService;
+    private final IUserService userService;
 
-	@Autowired
-	public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService, IUserService userService) {
-		this.portfolioService = portfolioService;
-		this.portfolioAssetService = portfolioAssetService;
-		this.userService = userService;
-	}
+    @Autowired
+    public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService,
+            IUserService userService) {
+        this.portfolioService = portfolioService;
+        this.portfolioAssetService = portfolioAssetService;
+        this.userService = userService;
+    }
 
-	@GetMapping(path = "/portfolio")
-	public FindAllPortfoliosResponse findAll() {
-		List<Portfolio> portfolioList = portfolioService.findAll();
+    @GetMapping(path = "/portfolios")
+    public FindAllPortfoliosResponse findAll() {
+        List<Portfolio> portfolioList = portfolioService.findAll();
 
-		FindAllPortfoliosResponse response = new FindAllPortfoliosResponse();
-		response.setPortfolioList(portfolioList);
-		return response;
-	}
+        FindAllPortfoliosResponse response = new FindAllPortfoliosResponse();
+        response.setPortfolioList(portfolioList);
+        return response;
+    }
 
-	@PostMapping(path = "/portfolio")
-	public CreatePortfolioResponse createPortfolio(@RequestBody CreatePortfolioRequest request) {
-		if (request.getPortfolioName() == null || request.getPortfolioName().isEmpty()) {
-			throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIONAME);
-		}
-		if (request.getDescription() == null || request.getDescription().isEmpty()) {
-			throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIODESC);
-		}
+    @PostMapping(path = "/portfolios")
+    public CreatePortfolioResponse createPortfolio(@RequestBody CreatePortfolioRequest request) {
+        if (request.getPortfolioName() == null || request.getPortfolioName().isEmpty()) {
+            throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIONAME);
+        }
+        if (request.getDescription() == null || request.getDescription().isEmpty()) {
+            throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIODESC);
+        }
 
-		logger.info("Beginning creation of new portfolio with the following details");
-		logger.info("New Portfolio Name: " + request.getPortfolioName());
-		logger.info("New Portfolio Description: " + request.getDescription());
-		Portfolio portfolio = portfolioService.createNewPortfolio(
-				new Portfolio(
-						request.getUserId(),
-						request.getPortfolioName(),
-						request.getDescription()));
-		System.out.println(portfolio.getPid());
+        logger.info("Beginning creation of new portfolio with the following details");
+        logger.info("New Portfolio Name: " + request.getPortfolioName());
+        logger.info("New Portfolio Description: " + request.getDescription());
+        Portfolio portfolio = portfolioService.createNewPortfolio(
+                new Portfolio(
+                        request.getUserId(),
+                        request.getPortfolioName(),
+                        request.getDescription()));
+        System.out.println(portfolio.getPid());
 
-		CreatePortfolioResponse response = new CreatePortfolioResponse();
-		response.setPid(portfolio.getPid());
-		response.setUserId(portfolio.getUserId());
-		response.setPortfolioName(portfolio.getPortfolioName());
-		response.setDescription(portfolio.getDescription());
+        CreatePortfolioResponse response = new CreatePortfolioResponse();
+        response.setPid(portfolio.getPid());
+        response.setUserId(portfolio.getUserId());
+        response.setPortfolioName(portfolio.getPortfolioName());
+        response.setDescription(portfolio.getDescription());
 
-		return response;
-	}
+        return response;
+    }
 
-	@GetMapping(path = "/portfolio/{pid}")
-	public GetPortfolioByIdResponse getPortfolio(@PathVariable long pid) {
-		Portfolio portfolio = portfolioService.findByPid(pid);
+    @GetMapping(path = "/portfolios/{pid}")
+    public GetPortfolioByIdResponse getPortfolio(@PathVariable long pid) {
+        Portfolio portfolio = portfolioService.findByPid(pid);
 
-		GetPortfolioByIdResponse response = new GetPortfolioByIdResponse();
-		response.setPid(portfolio.getPid());
-		response.setUserId(portfolio.getUserId());
-		response.setPortfolioName(portfolio.getPortfolioName());
-		response.setDescription(portfolio.getDescription());
+        GetPortfolioByIdResponse response = new GetPortfolioByIdResponse();
+        response.setPid(portfolio.getPid());
+        response.setUserId(portfolio.getUserId());
+        response.setPortfolioName(portfolio.getPortfolioName());
+        response.setDescription(portfolio.getDescription());
 
-		return response;
-	}
+        return response;
+    }
 
-	@PutMapping(path = "/portfolio/{pid}")
-	public UpdatePortfolioMetadataResponse updatePortfolio(@PathVariable long pid,
-			@RequestBody UpdatePortfolioMetaDataRquest body) {
-		Portfolio portfolio = portfolioService.findByPid(pid);
+    @PutMapping(path = "/portfolios/{pid}")
+    public UpdatePortfolioMetadataResponse updatePortfolio(@PathVariable long pid,
+            @RequestBody UpdatePortfolioMetaDataRquest body) {
+        Portfolio portfolio = portfolioService.findByPid(pid);
 
-		if (portfolio == null) {
-			throw new PortfolioAssetNotFoundException(pid);
-		}
+        if (portfolio == null) {
+            throw new PortfolioAssetNotFoundException(pid);
+        }
 
-		logger.info("Beginning update of portfolio with the following details");
-		logger.info("Portfolio ID: " + pid);
-		logger.info("New Portfolio Name: " + body.getPortfolioName());
-		logger.info("New Portfolio Description: " + body.getDescription());
+        logger.info("Beginning update of portfolio with the following details");
+        logger.info("Portfolio ID: " + pid);
+        logger.info("New Portfolio Name: " + body.getPortfolioName());
+        logger.info("New Portfolio Description: " + body.getDescription());
 
-		String portfolioName = body.getPortfolioName();
-		String description = body.getDescription();
+        String portfolioName = body.getPortfolioName();
+        String description = body.getDescription();
 
-		if (portfolioName == null && description == null) {
-			throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIOMETADATA);
-		}
-		if (portfolioName != null && !portfolioName.isEmpty()) {
-			portfolio.setPortfolioName(portfolioName);
-		}
-		if (description != null && !description.isEmpty()) {
-			portfolio.setDescription(description);
-		}
+        if (portfolioName == null && description == null) {
+            throw new BadRequestException(Constants.MESSAGE_MISSINGPORTFOLIOMETADATA);
+        }
+        if (portfolioName != null && !portfolioName.isEmpty()) {
+            portfolio.setPortfolioName(portfolioName);
+        }
+        if (description != null && !description.isEmpty()) {
+            portfolio.setDescription(description);
+        }
 
-		portfolioService.updatePortfolio(portfolio);
+        portfolioService.updatePortfolio(portfolio);
 
-		logger.info("Portfolio updated successfully");
+        logger.info("Portfolio updated successfully");
 
-		UpdatePortfolioMetadataResponse response = new UpdatePortfolioMetadataResponse();
-		response.setPortfolioName(portfolio.getPortfolioName());
-		response.setDescription(portfolio.getDescription());
+        UpdatePortfolioMetadataResponse response = new UpdatePortfolioMetadataResponse();
+        response.setPortfolioName(portfolio.getPortfolioName());
+        response.setDescription(portfolio.getDescription());
 
-		return response;
-	}
+        return response;
+    }
 
-	@PostMapping(path = "/portfolio/asset")
-	public CreatePortfolioAssetResponse addPortfolioAsset(@RequestBody CreatePortfolioAssetRequest request) {
-		if (request.getPortfolioId() == null) {
-			throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
-		}
-		if (request.getAssetTicker() == null) {
-			throw new BadRequestException(Constants.MESSAGE_INVALIDASSETTICKER);
-		}
+    @PostMapping(path = "/portfolios/assets")
+    public CreatePortfolioAssetResponse addPortfolioAsset(@RequestBody CreatePortfolioAssetRequest request) {
+        if (request.getPortfolioId() == null) {
+            throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
+        }
+        if (request.getAssetTicker() == null) {
+            throw new BadRequestException(Constants.MESSAGE_INVALIDASSETTICKER);
+        }
 
-		// Portfolio portfolio = restTemplate.exchange("http://localhost:8080/portfolio/"+request.getPortfolioId(), HttpMethod.GET, null, Portfolio.class).getBody();
+        logger.info("New Portfolio Asset Ticker: " + request.getAssetTicker());
+        logger.info("New Portfolio Asset Average Price: " + request.getPrice());
+        logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
+        PortfolioAsset portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
+                new PortfolioAsset(
+                        request.getPortfolioId(),
+                        request.getAssetTicker(),
+                        request.getPrice(),
+                        request.getQuantity()));
 
-		
-		// logger.info("Adding " + request.getAssetId() + " to portfolio " + portfolio.getPid());
-		logger.info("New Portfolio Asset Ticker: " + request.getAssetTicker());
-		logger.info("New Portfolio Asset Average Price: " + request.getPrice());
-		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
-		PortfolioAsset portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
-				new PortfolioAsset(
-						request.getPortfolioId(),
-						request.getAssetTicker(),
-						request.getPrice(),
-						request.getQuantity()));
+        java.util.Date time = new java.util.Date(portfolioAsset.getDateCreated() * 1000);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse();
 
-		java.util.Date time = new java.util.Date(portfolioAsset.getDateCreated() * 1000);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse(); 
+        logger.info("Created on: " + time);
+        logger.info("New Portfolio Asset Average Price: " + request.getPrice());
+        logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 
-		logger.info("Created on: " + time);
-		logger.info("New Portfolio Asset Average Price: " + request.getPrice());
-		logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
+        response.setAssetTicker(portfolioAsset.getAssetTicker());
+        response.setPortfolioId(portfolioAsset.getPortfolioId());
+        response.setPrice(portfolioAsset.getPrice());
+        response.setQuantity(portfolioAsset.getQuantity());
+        response.setDateCreated(sdf.format(time));
+        response.setDateModified(sdf.format(time));
 
-		response.setAssetTicker(portfolioAsset.getAssetTicker());
-		response.setPortfolioId(portfolioAsset.getPortfolioId());
-		response.setPrice(portfolioAsset.getPrice());
-		response.setQuantity(portfolioAsset.getQuantity());
-		response.setDateCreated(sdf.format(time));
-		response.setDateModified(sdf.format(time));
+        return response;
+    }
 
-		return response;
-	}
+    @DeleteMapping(path = "/portfolios/assets")
+    public void deletePortfolioAsset(@RequestBody DeletePortfolioAssetRequest request) {
+        if (request.getPortfolioId() == null) {
+            throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
+        }
+        if (request.getAssetTicker() == null) {
+            throw new BadRequestException(Constants.MESSAGE_INVALIDASSETTICKER);
+        }
 
-	@GetMapping(path = "/portfolio/assets/{pid}")
-	public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable long pid) {
-		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		if (portfolioAssetList.isEmpty()) {
-			//here
-			throw new PortfolioNotFoundException();
-		}
+        long pid = request.getPortfolioId();
+        String assetTicker = request.getAssetTicker();
 
-		Map<String, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
-				.collect(Collectors.groupingBy(e -> e.getAssetTicker(), Collectors.collectingAndThen(
-						Collectors.toList(),
-						l -> l.stream().reduce(PortfolioAsset::merge).get())));
+        List<PortfolioAsset> portfolioAssets = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
 
-		GetAllAssetsByPortfolioIdResponse response = new GetAllAssetsByPortfolioIdResponse();
-		response.setPortfolioAssetList(aggregatedPortfolioAssets.values().stream().collect(Collectors.toList()));
-		return response;
-	}
+        for (PortfolioAsset portfolioAsset : portfolioAssets) {
+            if (portfolioAsset == null) {
+                throw new PortfolioAssetNotFoundException(pid, assetTicker);
+            }
+            portfolioAssetService.deletePortfolioAsset(pid, assetTicker);
+        }
+    }
 
-	@GetMapping(path = "/portfolio/{pid}/transactions")
-	public List<Map<String, Object>> getTransactionsByPortfolioId(@PathVariable long pid) {
-		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		List<Map<String, Object>> transactionList = new ArrayList<>();
+    @GetMapping(path = "/portfolios/{pid}/assets")
+    public GetAllAssetsByPortfolioIdResponse getAllAssetsByPortfolioId(@PathVariable long pid) {
+        List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+        if (portfolioAssetList.isEmpty()) {
+            // here
+            throw new PortfolioNotFoundException();
+        }
 
-		for (PortfolioAsset asset : portfolioAssetList) {
-			Map<String, Object> transaction = new HashMap<>();
-			transaction.put("portfolioAssetId", asset.getPortfolioAssetId());
-			transaction.put("portfolioId", asset.getPortfolioId());
-			transaction.put("assetTicker", asset.getAssetTicker());
-			transaction.put("price", asset.getPrice());
-			transaction.put("quantity", asset.getQuantity());
-			transaction.put("dateCreated", asset.getDateCreatedStringMap().get("dateCreated"));
-			transaction.put("dateModified", asset.getDateModifiedStringMap().get("dateModified"));
-			transactionList.add(transaction);
-		}
-		return transactionList;
-	}
+        Map<String, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
+                .collect(Collectors.groupingBy(e -> e.getAssetTicker(), Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        l -> l.stream().reduce(PortfolioAsset::merge).get())));
 
-	@GetMapping(path = "/portfolio/{pid}/allocation/ticker")
-	public List<Map<String, Object>> getAllocationPercentageByTicker(@PathVariable long pid) {
-		Portfolio portfolio = portfolioService.findByPid(pid);
-		if (portfolio == null) {
-			throw new PortfolioNotFoundException(pid);
-		}
+        GetAllAssetsByPortfolioIdResponse response = new GetAllAssetsByPortfolioIdResponse();
+        response.setPortfolioAssetList(aggregatedPortfolioAssets.values().stream().collect(Collectors.toList()));
+        return response;
+    }
 
-		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		if (portfolioAssetList.isEmpty()) {
-			throw new PortfolioAssetNotFoundException();
-		}
+    @GetMapping(path = "/portfolios/{pid}/assets/{assetTicker}")
+    public List<PortfolioAsset> getPortfolioAssetByPortfolioIdAndAssetTicker(@PathVariable long pid,
+            @PathVariable String assetTicker) {
 
-		List<PortfolioAsset> aggregatedPortfolioAssetList = portfolioAssetService.aggregatePortfolioAssets(portfolioAssetList);
-		Map<String, Double> tickerMap = new HashMap<>();
-		double totalAmount = 0.0;
+        List<PortfolioAsset> portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
+        if (portfolioAsset == null) {
+            throw new PortfolioAssetNotFoundException(pid, assetTicker);
+        }
 
+        return portfolioAsset;
+    }
 
-		for(PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
-			String aggregatedPortfolioAssetTicker = aggregatedPortfolioAsset.getAssetTicker().trim();
-			double amount = aggregatedPortfolioAsset.getPrice();
-			int quantity = aggregatedPortfolioAsset.getQuantity();
-			double aggregatedAmount = amount * quantity;
-			totalAmount += aggregatedAmount;
+    @GetMapping(path = "/portfolios/{pid}/transactions")
+    public List<Map<String, Object>> getTransactionsByPortfolioId(@PathVariable long pid) {
+        List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+        List<Map<String, Object>> transactionList = new ArrayList<>();
 
-			logger.info("Asset Ticker = " + aggregatedPortfolioAssetTicker + ", Amount = " + aggregatedAmount);
+        for (PortfolioAsset asset : portfolioAssetList) {
+            Map<String, Object> transaction = new HashMap<>();
+            transaction.put("portfolioAssetId", asset.getPortfolioAssetId());
+            transaction.put("portfolioId", asset.getPortfolioId());
+            transaction.put("assetTicker", asset.getAssetTicker());
+            transaction.put("price", asset.getPrice());
+            transaction.put("quantity", asset.getQuantity());
+            transaction.put("dateCreated", asset.getDateCreatedStringMap().get("dateCreated"));
+            transaction.put("dateModified", asset.getDateModifiedStringMap().get("dateModified"));
+            transactionList.add(transaction);
+        }
+        return transactionList;
+    }
 
-			tickerMap.put(aggregatedPortfolioAssetTicker, aggregatedAmount);
-		}
+    @GetMapping(path = "/portfolios/{pid}/allocation/ticker")
+    public List<Map<String, Object>> getAllocationPercentageByTicker(@PathVariable long pid) {
+        Portfolio portfolio = portfolioService.findByPid(pid);
+        if (portfolio == null) {
+            throw new PortfolioNotFoundException(pid);
+        }
 
-		logger.info("Total amount in portfolio= " + totalAmount);
-		logger.info("Amount of assets in ticker map {}", tickerMap);
+        List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+        if (portfolioAssetList.isEmpty()) {
+            throw new PortfolioAssetNotFoundException();
+        }
 
-		List<Map<String, Object>> percentageByTickerList = new ArrayList<>();
-		for (Map.Entry<String, Double> element : tickerMap.entrySet()) {
-			String assetTicker = element.getKey();
-			double amount = element.getValue();
-			double percentage =  amount / totalAmount;
+        List<PortfolioAsset> aggregatedPortfolioAssetList = portfolioAssetService
+                .aggregatePortfolioAssets(portfolioAssetList);
+        Map<String, Double> tickerMap = new HashMap<>();
+        double totalAmount = 0.0;
 
-			Map<String, Object> allocation = new HashMap<>();
+        for (PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
+            String aggregatedPortfolioAssetTicker = aggregatedPortfolioAsset.getAssetTicker().trim();
+            double amount = aggregatedPortfolioAsset.getPrice();
+            int quantity = aggregatedPortfolioAsset.getQuantity();
+            double aggregatedAmount = amount * quantity;
+            totalAmount += aggregatedAmount;
+
+            logger.info("Asset Ticker = " + aggregatedPortfolioAssetTicker + ", Amount = " + aggregatedAmount);
+
+            tickerMap.put(aggregatedPortfolioAssetTicker, aggregatedAmount);
+        }
+
+        logger.info("Total amount in portfolio= " + totalAmount);
+        logger.info("Amount of assets in ticker map {}", tickerMap);
+
+        List<Map<String, Object>> percentageByTickerList = new ArrayList<>();
+        for (Map.Entry<String, Double> element : tickerMap.entrySet()) {
+            String assetTicker = element.getKey();
+            double amount = element.getValue();
+            double percentage = amount / totalAmount;
+
+            Map<String, Object> allocation = new HashMap<>();
             allocation.put("assetTicker", assetTicker);
             allocation.put("percentage", percentage);
             percentageByTickerList.add(allocation);
-		}
+        }
 
+        return percentageByTickerList;
+    }
 
-		return percentageByTickerList;
-	}
-	
+    @GetMapping(path = "/portfolios/{pid}/allocation/industry")
+    public List<Map<String, Object>> getAllocationPercentageByIndustry(@PathVariable long pid) {
+        Portfolio portfolio = portfolioService.findByPid(pid);
+        if (portfolio == null) {
+            throw new PortfolioNotFoundException(pid);
+        }
 
-	@GetMapping(path = "/portfolio/{pid}/allocation/industry")
-	public List<Map<String, Object>> getAllocationPercentageByIndustry(@PathVariable long pid) {
-		Portfolio portfolio = portfolioService.findByPid(pid);
-		if (portfolio == null) {
-			throw new PortfolioNotFoundException(pid);
-		}
+        List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+        if (portfolioAssetList.isEmpty()) {
+            throw new PortfolioAssetNotFoundException();
+        }
 
-		List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-		if (portfolioAssetList.isEmpty()) {
-			throw new PortfolioAssetNotFoundException();
-		}
+        List<PortfolioAsset> aggregatedPortfolioAssetList = portfolioAssetService
+                .aggregatePortfolioAssets(portfolioAssetList);
+        Map<String, Double> industryMap = new HashMap<>();
+        double totalAmount = 0.0;
 
-		List<PortfolioAsset> aggregatedPortfolioAssetList = portfolioAssetService.aggregatePortfolioAssets(portfolioAssetList);
-		Map<String, Double> industryMap = new HashMap<>();
-		double totalAmount = 0.0;
+        for (PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
+            Asset asset = aggregatedPortfolioAsset.getAsset();
+            double amount = aggregatedPortfolioAsset.getPrice();
+            int quantity = aggregatedPortfolioAsset.getQuantity();
+            double aggregatedAmount = amount * quantity;
+            String industry = asset.getAssetIndustry();
 
-		for (PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
-			Asset asset = aggregatedPortfolioAsset.getAsset();
-			double amount = aggregatedPortfolioAsset.getPrice();
-			int quantity = aggregatedPortfolioAsset.getQuantity();
-			double aggregatedAmount = amount * quantity;
-			String industry = asset.getAssetIndustry();
-			
-			logger.info("Industry = " + industry + ", Amount = " + aggregatedAmount);
+            logger.info("Industry = " + industry + ", Amount = " + aggregatedAmount);
 
-			totalAmount += aggregatedAmount;
+            totalAmount += aggregatedAmount;
 
-			if (!(industryMap.containsKey(industry))) {
-				industryMap.put(industry, aggregatedAmount);
-			} else {
-				double updatedAmount = industryMap.get(industry);
-				updatedAmount += aggregatedAmount;
-				industryMap.put(industry, updatedAmount);
-			}
-		}
-		logger.info("Total amount in portfolio= " + totalAmount);
-		logger.info("Amount of assets in ticker map {}", industryMap);
+            if (!(industryMap.containsKey(industry))) {
+                industryMap.put(industry, aggregatedAmount);
+            } else {
+                double updatedAmount = industryMap.get(industry);
+                updatedAmount += aggregatedAmount;
+                industryMap.put(industry, updatedAmount);
+            }
+        }
+        logger.info("Total amount in portfolio= " + totalAmount);
+        logger.info("Amount of assets in ticker map {}", industryMap);
 
-		List<Map<String, Object>> percentageByIndustry = new ArrayList<>();
-		for (Map.Entry<String, Double> element : industryMap.entrySet()) {
-			String industry = element.getKey();
-			double amount = element.getValue();
-			double percentage = amount / totalAmount;
+        List<Map<String, Object>> percentageByIndustry = new ArrayList<>();
+        for (Map.Entry<String, Double> element : industryMap.entrySet()) {
+            String industry = element.getKey();
+            double amount = element.getValue();
+            double percentage = amount / totalAmount;
 
-			Map<String, Object> allocation = new HashMap<>();
+            Map<String, Object> allocation = new HashMap<>();
             allocation.put("industry", industry);
             allocation.put("percentage", percentage);
             percentageByIndustry.add(allocation);
-		}
+        }
 
+        return percentageByIndustry;
+    }
 
-		return percentageByIndustry;
-	}
+    @GetMapping(path = "/portfolio/asset/user/{userId}")
+    public GetAllPortfolioAssetsByUserResponse getAllAssetsByUserId(@PathVariable String userId) {
+        List<PortfolioAsset> output = new ArrayList<>();
+        List<Portfolio> portfolioList = userService.findUserPortfolios(userId);
 
-	@DeleteMapping(path = "/portfolio/asset/delete")
-	public void deletePortfolioAsset(@RequestBody DeletePortfolioAssetRequest request) {
-		if (request.getPortfolioId() == null) {
-			throw new BadRequestException(Constants.MESSAGE_INVALIDPORTFOLIOID);
-		}
-		if (request.getAssetTicker() == null) {
-			throw new BadRequestException(Constants.MESSAGE_INVALIDASSETTICKER);
-		}
-
-		long pid = request.getPortfolioId();
-		String assetTicker = request.getAssetTicker();
-
-		List<PortfolioAsset> portfolioAssets = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
-
-		for (PortfolioAsset portfolioAsset : portfolioAssets){
-			if (portfolioAsset == null) {
-				throw new PortfolioAssetNotFoundException(pid, assetTicker);
-			}
-			portfolioAssetService.deletePortfolioAsset(pid, assetTicker);
-		}		
-	}
-
-	@GetMapping(path = "/portfolio/asset/{pid}/{assetTicker}")
-	public List<PortfolioAsset> getPortfolioAssetByPortfolioIdAndAssetTicker(@PathVariable long pid, @PathVariable String assetTicker) {
-
-		List<PortfolioAsset> portfolioAsset = portfolioAssetService.findByPortfolioIdAndAssetTicker(pid, assetTicker);
-		if (portfolioAsset == null) {
-			throw new PortfolioAssetNotFoundException(pid, assetTicker);
-		}
-		
-		return portfolioAsset;
-	}
-
-	@GetMapping(path = "/portfolio/asset/user/{userId}")
-	public GetAllPortfolioAssetsByUserResponse getAllAssetsByUserId(@PathVariable String userId){
-		List<PortfolioAsset> output = new ArrayList<>();
-		List<Portfolio> portfolioList = userService.findUserPortfolios(userId);
-
-		for (Portfolio portfolio : portfolioList){
-			long pid = portfolio.getPid();
-			List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-			for (PortfolioAsset portfolioAsset : portfolioAssetList){
-				output.add(portfolioAsset);
-			}
-		}
-		GetAllPortfolioAssetsByUserResponse response = new GetAllPortfolioAssetsByUserResponse();
-		response.setPortfolioAssetList(output); 
-		return response;
-	}
+        for (Portfolio portfolio : portfolioList) {
+            long pid = portfolio.getPid();
+            List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+            for (PortfolioAsset portfolioAsset : portfolioAssetList) {
+                output.add(portfolioAsset);
+            }
+        }
+        GetAllPortfolioAssetsByUserResponse response = new GetAllPortfolioAssetsByUserResponse();
+        response.setPortfolioAssetList(output);
+        return response;
+    }
 
 }
