@@ -3,9 +3,9 @@ package com.backend.response;
 import lombok.Data;
 @Data
 public class AssetFormatResponse {
-    private String assetValue;
-    private String assetName;
-    private String assetTicker;
+    private String value;
+    private String label;
+    private String ticker;
 }
 
 

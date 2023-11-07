@@ -64,9 +64,9 @@ public class AssetController {
         
         for(Asset asset : assetList) {
             AssetFormatResponse response = new AssetFormatResponse();
-            response.setAssetValue(asset.getAssetName().toLowerCase());
-            response.setAssetName(asset.getAssetName());
-            response.setAssetTicker(asset.getAssetTicker().trim());
+            response.setValue(asset.getAssetName().toLowerCase());
+            response.setLabel(asset.getAssetName());
+            response.setTicker(asset.getAssetTicker().trim());
             responseList.add(response);
         }
         return responseList;
