@@ -7,6 +7,5 @@ import com.backend.model.Asset;
 
 @RepositoryRestResource(exported = false)
 public interface AssetRepository extends JpaRepository<Asset, Long> {
-    // Asset findByAssetId(long assetId);
     Asset findByAssetTicker(String assetTicker);
 }

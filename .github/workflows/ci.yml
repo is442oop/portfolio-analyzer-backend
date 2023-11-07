@@ -18,5 +18,7 @@ jobs:
           cache: "maven"
       - name: Setup postgres environment
         run: docker compose -f ./.docker/docker-compose.yml up -d db
+      - name: Wait for postgres to start
+        run: timeout 90s bash -c "until docker exec db pg_isready ; do sleep 5 ; done"
       - name: Build project with Maven
         run: mvn -B package --file pom.xml

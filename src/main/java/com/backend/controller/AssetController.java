@@ -24,32 +24,30 @@ public class AssetController {
     private final IAssetService assetService;
 
     @Autowired
-    public AssetController (IAssetService assetService) {
+    public AssetController(IAssetService assetService) {
         this.assetService = assetService;
     }
 
-    @GetMapping(path = "/asset/{assetTicker}")
+    @GetMapping(path = "/assets/{assetTicker}")
     public GetAssetByTickerResponse findByAssetTicker(@PathVariable("assetTicker") String assetTicker) {
         Asset asset = assetService.findByAssetTicker(assetTicker);
 
         GetAssetByTickerResponse response = new GetAssetByTickerResponse();
-        // response.setAssetId(asset.getAssetId());
         response.setAssetTicker(asset.getAssetTicker());
         response.setAssetName(asset.getAssetName());
         response.setAssetDescription(asset.getAssetDescription());
         response.setAssetIndustry(asset.getAssetIndustry());
         response.setAssetType(asset.getAssetType());
-        // response.setAssetRefDataList(asset.getAssetRefDataList());
 
         return response;
     }
 
-    @GetMapping(path = "/asset")
+    @GetMapping(path = "/assets")
     public List<AssetResponse> getAssets() {
         List<Asset> assetList = assetService.findAll();
         List<AssetResponse> responseList = new ArrayList<>();
-        
-        for(Asset asset : assetList) {
+
+        for (Asset asset : assetList) {
             AssetResponse response = new AssetResponse();
             response.setAssetName(asset.getAssetName());
             response.setAssetTicker(asset.getAssetTicker().trim());

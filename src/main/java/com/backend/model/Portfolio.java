@@ -22,7 +22,6 @@ public class Portfolio {
     @Column(name = "user_id")
     private String userId;
 
-
     @Column(name = "portfolio_name")
     private String portfolioName;
     private String description;
@@ -35,6 +34,5 @@ public class Portfolio {
         this.portfolioName = portfolioName;
         this.description = description;
     }
-
 
 }
