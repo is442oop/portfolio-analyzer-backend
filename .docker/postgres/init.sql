@@ -49,7 +49,7 @@ CREATE TABLE prod.asset (
 --- Create the 'portfolio_asset' table under the 'prod' schema with the portfolio_asset_id_seq as the default value for the pid column
 CREATE TABLE prod.portfolio_asset (
     portfolio_asset_id BIGINT DEFAULT nextval('portfolio_asset_id_seq') PRIMARY KEY,
-    portfolio_id BIGINT NOT NULL REFERENCES prod.portfolio(pid),
+    portfolio_id BIGINT NOT NULL REFERENCES prod.portfolio(pid) ON DELETE CASCADE,
     -- asset_id BIGINT NOT NULL  REFERENCES prod.asset(asset_id),
     asset_ticker VARCHAR(15) NOT NULL REFERENCES prod.asset(asset_ticker),
     price DECIMAL NOT NULL,
