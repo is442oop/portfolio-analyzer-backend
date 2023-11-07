@@ -34,11 +34,13 @@ import com.backend.response.CreatePortfolioAssetResponse;
 import com.backend.response.CreatePortfolioResponse;
 import com.backend.response.FindAllPortfoliosResponse;
 import com.backend.response.GetAllAssetsByPortfolioIdResponse;
+import com.backend.response.GetAllPortfolioAssetsByUserResponse;
 import com.backend.response.GetPortfolioByIdResponse;
 import com.backend.response.UpdatePortfolioMetadataResponse;
 import com.backend.service.abstractions.IAssetService;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.service.abstractions.IPortfolioService;
+import com.backend.service.abstractions.IUserService;
 import com.backend.request.DeletePortfolioAssetRequest;
 
 
@@ -48,14 +50,13 @@ public class PortfolioController {
 	Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 	private final IPortfolioService portfolioService;
 	private final IPortfolioAssetService portfolioAssetService;
-	// private final IAssetService assetService;
+	private final IUserService userService;
 
 	@Autowired
-	public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService,
-			IAssetService assetService) {
+	public PortfolioController(IPortfolioService portfolioService, IPortfolioAssetService portfolioAssetService, IUserService userService) {
 		this.portfolioService = portfolioService;
 		this.portfolioAssetService = portfolioAssetService;
-		// this.assetService = assetService;
+		this.userService = userService;
 	}
 
 	@GetMapping(path = "/portfolio")
@@ -358,6 +359,23 @@ public class PortfolioController {
 		}
 		
 		return portfolioAsset;
+	}
+
+	@GetMapping(path = "/portfolio/asset/user/{userId}")
+	public GetAllPortfolioAssetsByUserResponse getAllAssetsByUserId(@PathVariable String userId){
+		List<PortfolioAsset> output = new ArrayList<>();
+		List<Portfolio> portfolioList = userService.findUserPortfolios(userId);
+
+		for (Portfolio portfolio : portfolioList){
+			long pid = portfolio.getPid();
+			List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+			for (PortfolioAsset portfolioAsset : portfolioAssetList){
+				output.add(portfolioAsset);
+			}
+		}
+		GetAllPortfolioAssetsByUserResponse response = new GetAllPortfolioAssetsByUserResponse();
+		response.setPortfolioAssetList(output); 
+		return response;
 	}
 
 }
