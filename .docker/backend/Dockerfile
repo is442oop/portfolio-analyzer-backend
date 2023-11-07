@@ -6,7 +6,8 @@ ENV HOME=/usr/app
 RUN mkdir -p $HOME
 WORKDIR $HOME
 ADD . $HOME
-RUN ./scripts/mvnw -f $HOME/pom.xml clean package -Dmaven.test.skip
+RUN sed -i 's/\r$//' $HOME/scripts/mvnw && chmod +x $HOME/scripts/mvnw
+RUN $HOME/scripts/mvnw -f $HOME/pom.xml clean package -Dmaven.test.skip
 
 #
 # Package stage
