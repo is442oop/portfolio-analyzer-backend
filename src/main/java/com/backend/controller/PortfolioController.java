@@ -34,7 +34,7 @@ import com.backend.response.CreatePortfolioAssetResponse;
 import com.backend.response.CreatePortfolioResponse;
 import com.backend.response.FindAllPortfoliosResponse;
 import com.backend.response.GetAllAssetsByPortfolioIdResponse;
-import com.backend.response.GetAllAssetsByUserResponse;
+import com.backend.response.GetAllPortfolioAssetsByUserResponse;
 import com.backend.response.GetPortfolioByIdResponse;
 import com.backend.response.UpdatePortfolioMetadataResponse;
 import com.backend.service.abstractions.IAssetService;
@@ -345,7 +345,7 @@ public class PortfolioController {
 	}
 
 	@GetMapping(path = "/portfolio/asset/user/{userId}")
-	public GetAllAssetsByUserResponse getAllAssetsByUserId(@PathVariable String userId){
+	public GetAllPortfolioAssetsByUserResponse getAllAssetsByUserId(@PathVariable String userId){
 		List<PortfolioAsset> output = new ArrayList<>();
 		List<Portfolio> portfolioList = userService.findUserPortfolios(userId);
 
@@ -356,7 +356,7 @@ public class PortfolioController {
 				output.add(portfolioAsset);
 			}
 		}
-		GetAllAssetsByUserResponse response = new GetAllAssetsByUserResponse();
+		GetAllPortfolioAssetsByUserResponse response = new GetAllPortfolioAssetsByUserResponse();
 		response.setAssetList(output); 
 		return response;
 	}
