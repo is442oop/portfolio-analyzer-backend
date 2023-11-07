@@ -238,31 +238,36 @@ public class PortfolioController {
 
 		List<PortfolioAsset> aggregatedPortfolioAssetList = portfolioAssetService.aggregatePortfolioAssets(portfolioAssetList);
 		Map<String, Double> tickerMap = new HashMap<>();
-		// int totalQuantity = 0;
 		double totalAmount = 0.0;
 
 
 		for(PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
 			String aggregatedPortfolioAssetTicker = aggregatedPortfolioAsset.getAssetTicker().trim();
 			double amount = aggregatedPortfolioAsset.getPrice();
-			totalAmount += amount;
-			tickerMap.put(aggregatedPortfolioAssetTicker, amount);
+			int quantity = aggregatedPortfolioAsset.getQuantity();
+			double aggregatedAmount = amount * quantity;
+			totalAmount += aggregatedAmount;
+
+			logger.info("Asset Ticker = " + aggregatedPortfolioAssetTicker + ", Amount = " + aggregatedAmount);
+
+			tickerMap.put(aggregatedPortfolioAssetTicker, aggregatedAmount);
 		}
 
 		logger.info("Total amount in portfolio= " + totalAmount);
 		logger.info("Amount of assets in ticker map {}", tickerMap);
-		List<Map<String, Object>> percentageByTickerList = new ArrayList<>();
 
+		List<Map<String, Object>> percentageByTickerList = new ArrayList<>();
 		for (Map.Entry<String, Double> element : tickerMap.entrySet()) {
 			String assetTicker = element.getKey();
-			double quantity = element.getValue();
-			double percentage =  quantity / totalAmount;
+			double amount = element.getValue();
+			double percentage =  amount / totalAmount;
 
 			Map<String, Object> allocation = new HashMap<>();
             allocation.put("assetTicker", assetTicker);
             allocation.put("percentage", percentage);
             percentageByTickerList.add(allocation);
 		}
+
 
 		return percentageByTickerList;
 	}
@@ -287,20 +292,25 @@ public class PortfolioController {
 		for (PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
 			Asset asset = aggregatedPortfolioAsset.getAsset();
 			double amount = aggregatedPortfolioAsset.getPrice();
+			int quantity = aggregatedPortfolioAsset.getQuantity();
+			double aggregatedAmount = amount * quantity;
 			String industry = asset.getAssetIndustry();
-			totalAmount += amount;
+			
+			logger.info("Industry = " + industry + ", Amount = " + aggregatedAmount);
+
+			totalAmount += aggregatedAmount;
 
 			if (!(industryMap.containsKey(industry))) {
-				industryMap.put(industry, amount);
+				industryMap.put(industry, aggregatedAmount);
 			} else {
 				double updatedAmount = industryMap.get(industry);
-				updatedAmount += amount;
+				updatedAmount += aggregatedAmount;
 				industryMap.put(industry, updatedAmount);
 			}
 		}
 		logger.info("Total amount in portfolio= " + totalAmount);
 		logger.info("Amount of assets in ticker map {}", industryMap);
-		
+
 		List<Map<String, Object>> percentageByIndustry = new ArrayList<>();
 		for (Map.Entry<String, Double> element : industryMap.entrySet()) {
 			String industry = element.getKey();
@@ -312,6 +322,7 @@ public class PortfolioController {
             allocation.put("percentage", percentage);
             percentageByIndustry.add(allocation);
 		}
+
 
 		return percentageByIndustry;
 	}
