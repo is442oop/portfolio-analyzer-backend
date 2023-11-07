@@ -174,7 +174,7 @@ public class PortfolioBalanceController {
         int durationInt = Integer.parseInt(duration);
 
         Dotenv dotenv = Dotenv.configure().load();
-        String apikey = dotenv.get("APIKEY");
+        String apikey = dotenv.get("APIKEY"); 
 
         ExecutorService executor = Executors.newFixedThreadPool(10);
         List<Callable<Map<Long, Double>>> tasks = new ArrayList<>();
@@ -198,6 +198,10 @@ public class PortfolioBalanceController {
         }
         executor.shutdown();
 
+        // System.out.println();
+        // System.out.println("assetPriceMap: "+assetPriceMap);
+        // System.out.println();
+
         TreeMap<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
         TreeMap<Long, Map<String, Integer>> sortedQtyMap = new TreeMap<>(Collections.reverseOrder());
         TreeMap<Long, Map<String, Integer>> finalQtyMap = new TreeMap<>();
@@ -212,7 +216,11 @@ public class PortfolioBalanceController {
             i += 1;
         }
 
-        double temp = 0;
+        // System.out.println();
+        // System.out.println("finalQtyMap: "+finalQtyMap);
+        // System.out.println();
+
+        // double temp = 0;
         for (long dateEpoch : finalQtyMap.keySet()){
             Map<String, Integer> assetQty = finalQtyMap.get(dateEpoch);
             double dailyBalance = 0;
@@ -222,13 +230,18 @@ public class PortfolioBalanceController {
                     double price = assetPriceMap.get(ticker).get(dateEpoch);
                     dailyBalance += qty * price;
                 }
+                else if (assetPriceMap.get(ticker).containsKey(dateEpoch - 86400)){ // Saturday using friday prices
+                    long tempDateEpoch = dateEpoch - 86400;
+                    double price = assetPriceMap.get(ticker).get(tempDateEpoch);
+                    dailyBalance += qty * price;
+                }
+                else if (assetPriceMap.get(ticker).containsKey(dateEpoch - 86400 - 86400)){
+                    long tempDateEpoch = dateEpoch - 86400 - 86400;
+                    double price = assetPriceMap.get(ticker).get(tempDateEpoch);
+                    dailyBalance += qty * price;
+                }
             }
-            if (dailyBalance == 0){
-                dailyBalance = temp;
-            }
-            else{
-            temp = dailyBalance;
-            }
+
             output.put(dateEpoch, dailyBalance);
         }
 
@@ -242,7 +255,8 @@ public class PortfolioBalanceController {
             Date dateEpoch = new Date(epoch * 1000);
             String dateStr = sdf.format(dateEpoch);
 
-
+            tempMap.put("epoch", epoch);
+            tempMap.put("dateEpoch", dateEpoch);
             tempMap.put("date", dateStr);
             tempMap.put("balance", output.get(epoch));
             portfolioHistoryData.add(tempMap);
