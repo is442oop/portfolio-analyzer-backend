@@ -126,7 +126,7 @@ public class UserController {
     
     }
 
-    @GetMapping("/users/{id}/portfolios/allocation")
+    @GetMapping("/users/{id}/portfolios/allocation/industry")
     public List<Map<String, Object>> getAllocationAcrossUserPortfolios(@PathVariable String id) {
             logger.info("Finding user " + id + " portfolio");
             List<Portfolio> portfolios = userService.findUserPortfolios(id);
@@ -178,17 +178,61 @@ public class UserController {
 
             return percentageByIndustry;
 
-        //     List<List<PortfolioAsset>> returnList = new ArrayList<>();
-            
-        //     for(Portfolio portfolio : portfolios) {
-        //         System.out.println("portfolio" + portfolio);
-        //         long pid = portfolio.getPid();
-        //         List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-        //         returnList.add(portfolioAssetList);
-        //     }
+    }
 
-        
-        // return returnList;
+    @GetMapping("/users/{id}/portfolios/allocation/ticker")
+    public List<Map<String, Object>> getAllocationPercentageByTicker(@PathVariable String id) {
+        logger.info("Finding user " + id + " portfolio");
+        List<Portfolio> portfolios = userService.findUserPortfolios(id);
+        if (portfolios.isEmpty()) {
+            throw new PortfolioNotFoundException();
+        }
+
+        List<List<PortfolioAsset>> listOfAggregatedPortfolioAssetList = new ArrayList<>();
+
+        for (Portfolio portfolio : portfolios) {
+            long pid = portfolio.getPid();
+            List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+            List<PortfolioAsset> aggregatedPortfolioAssetList = portfolioAssetService.aggregatePortfolioAssets(portfolioAssetList);
+            listOfAggregatedPortfolioAssetList.add(aggregatedPortfolioAssetList);
+
+        }
+        Map<String, Integer> tickerMap = new HashMap<>();
+        int totalQuantity = 0;
+
+         for(List<PortfolioAsset> aggregatedPortfolioAssetList : listOfAggregatedPortfolioAssetList) {
+            for(PortfolioAsset aggregatedPortfolioAsset : aggregatedPortfolioAssetList) {
+                String aggregatedPortfolioAssetTicker = aggregatedPortfolioAsset.getAssetTicker().trim();
+                int aggregatedQuantity = aggregatedPortfolioAsset.getQuantity();
+                totalQuantity += aggregatedQuantity;
+
+                if (!(tickerMap.containsKey(aggregatedPortfolioAssetTicker))) {
+                    tickerMap.put(aggregatedPortfolioAssetTicker, aggregatedQuantity);
+                } else {
+                    int updatedQuantity = tickerMap.get(aggregatedPortfolioAssetTicker);
+                    updatedQuantity += aggregatedQuantity;
+                    tickerMap.put(aggregatedPortfolioAssetTicker, updatedQuantity);
+                }
+            }
+        }
+
+        List<Map<String, Object>> percentageByTickerList = new ArrayList<>();
+
+		for (Map.Entry<String, Integer> element : tickerMap.entrySet()) {
+			String assetTicker = element.getKey();
+			Integer quantity = element.getValue();
+			float percentage = (float) quantity / totalQuantity;
+
+			Map<String, Object> allocation = new HashMap<>();
+            allocation.put("assetTicker", assetTicker);
+            allocation.put("percentage", percentage);
+            percentageByTickerList.add(allocation);
+		}
+
+		return percentageByTickerList;
+
+
+
     }
 
 }
