@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.backend.model.Asset;
 import com.backend.response.GetAssetByTickerResponse;
 import com.backend.response.AssetResponse;
+import com.backend.response.AssetFormatResponse;
 import com.backend.service.abstractions.IAssetService;
 
 @RestController
@@ -54,6 +55,20 @@ public class AssetController {
             responseList.add(response);
         }
         return responseList;
+    }
 
+    @GetMapping(path = "/assets/format")
+    public List<AssetFormatResponse> getAssetsByIndustry() {
+        List<Asset> assetList = assetService.findAll();
+        List<AssetFormatResponse> responseList = new ArrayList<>();
+        
+        for(Asset asset : assetList) {
+            AssetFormatResponse response = new AssetFormatResponse();
+            response.setValue(asset.getAssetName().toLowerCase());
+            response.setLabel(asset.getAssetName());
+            response.setTicker(asset.getAssetTicker().trim());
+            responseList.add(response);
+        }
+        return responseList;
     }
 }
