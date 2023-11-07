@@ -28,7 +28,8 @@ import com.backend.exception.UserNotFoundException;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
+            HttpStatusCode status, WebRequest request) {
         final String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
 
         final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
@@ -36,36 +37,43 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        final String error = ex.getValue() + " value for " + ex.getPropertyName() + " should be of type " + ex.getRequiredType();
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
+            HttpStatusCode status, WebRequest request) {
+        final String error = ex.getValue() + " value for " + ex.getPropertyName() + " should be of type "
+                + ex.getRequiredType();
 
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
         return buildResponseEntity(ex, apiError);
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         final StringBuilder builder = new StringBuilder();
         builder.append(ex.getMethod());
         builder.append(" method is not supported for this request. Supported methods are ");
         ex.getSupportedHttpMethods().forEach(t -> builder.append(t).append(" "));
 
-        final ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage(), builder.toString());
+        final ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage(),
+                builder.toString());
         return buildResponseEntity(ex, apiError);
     }
 
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
-    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException ex, final WebRequest request) {
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException ex,
+            final WebRequest request) {
         final String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
         return buildResponseEntity(ex, apiError);
     }
 
     @ExceptionHandler({ ConstraintViolationException.class })
-    public ResponseEntity<Object> handleConstraintViolation(final ConstraintViolationException ex, final WebRequest request) {
+    public ResponseEntity<Object> handleConstraintViolation(final ConstraintViolationException ex,
+            final WebRequest request) {
         final List<String> errors = new ArrayList<>();
         for (final ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errors.add(violation.getRootBeanClass().getName() + " " + violation.getPropertyPath() + ": " + violation.getMessage());
+            errors.add(violation.getRootBeanClass().getName() + " " + violation.getPropertyPath() + ": "
+                    + violation.getMessage());
         }
 
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
@@ -75,10 +83,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     // Custom Exception Handlers -> Add next ones after these methods.
     @ExceptionHandler({ BadRequestException.class })
     public ResponseEntity<Object> handleBadRequest(final BadRequestException ex, final WebRequest request) {
-      final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "error occurred");
-      return buildResponseEntity(ex, apiError);
+        final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "error occurred");
+        return buildResponseEntity(ex, apiError);
     }
-    
+
     @ExceptionHandler({ BadCredentialsException.class })
     public ResponseEntity<Object> handleBadCredentials(final BadCredentialsException ex, final WebRequest request) {
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "error occurred");
@@ -92,18 +100,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ PortfolioNotFoundException.class })
-        public ResponseEntity<Object> handlePortfolioNotFound(final PortfolioNotFoundException ex, final WebRequest request) {
+    public ResponseEntity<Object> handlePortfolioNotFound(final PortfolioNotFoundException ex,
+            final WebRequest request) {
         final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "error occurred");
         return buildResponseEntity(ex, apiError);
     }
-    
+
     private ResponseEntity<Object> buildResponseEntity(Exception ex, ApiError apiError) {
         logger.info(ex.getClass().getName());
         logger.error("error", ex);
 
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
-
-
 
 }

@@ -33,10 +33,10 @@ services:
       DB_URL: jdbc:postgresql://db:5432/postgres
       DB_USER: dba
       DB_PWD: changeme
+    volumes:
+      - ../:/usr/app/
     networks:
       - nw
-    volumes:
-      - ../:/usr/app
 
 volumes:
   pg_data:

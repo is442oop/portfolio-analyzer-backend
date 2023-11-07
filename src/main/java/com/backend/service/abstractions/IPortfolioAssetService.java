@@ -16,6 +16,6 @@ public interface IPortfolioAssetService {
     void deletePortfolioAsset(long pid, String ticker);
 
     List<PortfolioAsset> findByPortfolioIdAndAssetTicker(long portfolioId, String assetTicker);
-  
+
     List<PortfolioAsset> aggregatePortfolioAssets(List<PortfolioAsset> portfolioAssetList);
 }
