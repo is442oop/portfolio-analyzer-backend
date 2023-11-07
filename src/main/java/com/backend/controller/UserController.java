@@ -49,8 +49,6 @@ public class UserController {
 
     @GetMapping("/users")
     public FindAllUsersResponse findAll() {
-        logger.error("test");
-
         List<User> userList = userService.findAll();
 
         FindAllUsersResponse response = new FindAllUsersResponse();
@@ -244,5 +242,4 @@ public class UserController {
         return percentageByTickerList;
 
     }
-
 }

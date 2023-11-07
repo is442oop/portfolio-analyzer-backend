@@ -11,8 +11,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -21,6 +23,7 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,31 +37,42 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-
+import com.backend.exception.PortfolioNotFoundException;
+import com.backend.model.Portfolio;
 import com.backend.model.PortfolioAsset;
 import com.backend.service.abstractions.IPortfolioAssetService;
+import com.backend.service.abstractions.IUserService;
 import com.backend.response.GetPortfolioBalanceResponse;
+import com.backend.response.GetUserOverallPortfolioBalanceResponse;
 
 @RestController
 @RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 public class PortfolioBalanceController {
     private final IPortfolioAssetService portfolioAssetService;
+    private final IUserService userService;
 
     @Autowired
-    public PortfolioBalanceController(IPortfolioAssetService portfolioAssetService) {
+    public PortfolioBalanceController(IPortfolioAssetService portfolioAssetService, IUserService userService) {
         this.portfolioAssetService = portfolioAssetService;
+        this.userService = userService;
     }
 
-    public List<String> getAssetTickerList(int pid) {
+    public List<String> getAssetTickerListByPid(long pid) {
         List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
-        List<String> output = new ArrayList<>();
+        Set<String> tickers = new HashSet<String>();
         for (PortfolioAsset portfolioAsset : portfolioAssetList) {
-            String ticker = portfolioAsset.getAssetTicker();
-            if (!output.contains(ticker)) {
-                output.add(ticker);
-            }
+            tickers.add(portfolioAsset.getAssetTicker());
         }
-        return output;
+        return new ArrayList<String>(tickers);
+    }
+
+    public List<String> getAssetTickerListByUserId(String userId) {
+        List<Portfolio> portfolios = userService.findUserPortfolios(userId);
+        Set<String> tickers = new HashSet<String>();
+        for (Portfolio portfolio : portfolios) {
+            tickers.addAll(getAssetTickerListByPid(portfolio.getPid()));
+        }
+        return new ArrayList<String>(tickers);
     }
 
     public static long roundEpochToCurrentDay(long epochTime) {
@@ -78,7 +92,7 @@ public class PortfolioBalanceController {
         return updatedEpochTime;
     }
 
-    public TreeMap<Long, Map<String, Integer>> getHistoricalQty(int pid) {
+    public TreeMap<Long, Map<String, Integer>> getHistoricalQty(long pid) {
         TreeMap<Long, Map<String, Integer>> output = new TreeMap<>();
         Map<String, Integer> assetTruth = new HashMap<>();
         Map<Long, PortfolioAsset> epochMap = new TreeMap<>(); // map to sort portfolioAsset by dateCreated
@@ -185,14 +199,11 @@ public class PortfolioBalanceController {
         return assetPriceMap;
     }
 
-    @GetMapping(path = "/portfolios/{pid}/balance")
-    public GetPortfolioBalanceResponse getPortfolioBalance(@RequestParam("duration") Integer days,
-            @RequestParam("pid") int pid) throws Exception {
+    public List<Map<String, Object>> getPortfolioHistoryData(long pid, int days,
+            Map<String, Map<Long, Double>> assetPriceMap) throws Exception {
         List<Map<String, Object>> portfolioHistoryData = new ArrayList<Map<String, Object>>(); // Store qty of each
                                                                                                // asset for each day
-        List<String> tickers = getAssetTickerList(pid);
         TreeMap<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
-        Map<String, Map<Long, Double>> assetPriceMap = requestPriceTickers(tickers, days);
         System.out.println(qtyMap);
         int i = 0;
         double prevDayBalance = 0;
@@ -211,7 +222,10 @@ public class PortfolioBalanceController {
                     dailyBalance += qty * price;
                 }
             }
-            if (dailyBalance == 0) {
+            if (dailyBalance == 0.) {
+                if (prevDayBalance == 0.) {
+                    continue;
+                }
                 dailyBalance = prevDayBalance;
             } else {
                 prevDayBalance = dailyBalance;
@@ -228,8 +242,52 @@ public class PortfolioBalanceController {
             portfolioHistoryData.add(tempMap);
         }
         Collections.reverse(portfolioHistoryData);
+        return portfolioHistoryData;
+    }
+
+    @GetMapping(path = "/portfolios/{pid}/balance")
+    public GetPortfolioBalanceResponse getPortfolioBalance(@PathVariable Long pid,
+            @RequestParam("duration") Integer days) throws Exception {
+        List<String> tickers = getAssetTickerListByPid(pid);
+        Map<String, Map<Long, Double>> assetPriceMap = requestPriceTickers(tickers, days);
+        List<Map<String, Object>> portfolioHistoryData = getPortfolioHistoryData(pid, days, assetPriceMap);
         GetPortfolioBalanceResponse response = new GetPortfolioBalanceResponse();
         response.setPortfolioHistoryData(portfolioHistoryData);
+        return response;
+    }
+
+    @GetMapping("/users/{id}/portfolios/balance")
+    public GetUserOverallPortfolioBalanceResponse getUserOverallPortfolioBalance(@PathVariable String id,
+            @RequestParam("duration") Integer days)
+            throws Exception {
+        List<Portfolio> portfolios = userService.findUserPortfolios(id);
+        if (portfolios.isEmpty()) {
+            throw new PortfolioNotFoundException();
+        }
+        List<String> tickers = getAssetTickerListByUserId(id);
+        Map<String, Map<Long, Double>> assetPriceMap = requestPriceTickers(tickers, days);
+        List<Map<String, Object>> overallPortfolioBalanceData = new LinkedList<Map<String, Object>>();
+        Map<String, Double> aggregatedMap = new LinkedHashMap<>();
+        for (Portfolio portfolio : portfolios) {
+            long pid = portfolio.getPid();
+            List<Map<String, Object>> portfolioHistoryData = getPortfolioHistoryData(pid, days, assetPriceMap);
+            for (Map<String, Object> portfolioHistoryDataElem : portfolioHistoryData) {
+                String date = (String) portfolioHistoryDataElem.get("date");
+                double balance = (double) portfolioHistoryDataElem.get("balance");
+                aggregatedMap.put(date,
+                        aggregatedMap.getOrDefault(date, 0.) + balance);
+            }
+        }
+        for (Map.Entry<String, Double> entry : aggregatedMap.entrySet()) {
+            Map<String, Object> aggregatedEntry = new HashMap<>();
+            aggregatedEntry.put("date", entry.getKey());
+            aggregatedEntry.put("balance", entry.getValue());
+            overallPortfolioBalanceData.add(aggregatedEntry);
+        }
+
+        GetUserOverallPortfolioBalanceResponse response = new GetUserOverallPortfolioBalanceResponse();
+        response.setOverallPortfolioHistoryData(overallPortfolioBalanceData);
+
         return response;
     }
 }
