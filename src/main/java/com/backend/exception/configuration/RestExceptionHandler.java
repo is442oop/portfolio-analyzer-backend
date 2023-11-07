@@ -19,7 +19,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.backend.exception.BadCredentialsException;
 import com.backend.exception.BadRequestException;
+import com.backend.exception.PortfolioNotFoundException;
 import com.backend.exception.UserNotFoundException;
 
 @ControllerAdvice
@@ -73,6 +75,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     // Custom Exception Handlers -> Add next ones after these methods.
     @ExceptionHandler({ BadRequestException.class })
     public ResponseEntity<Object> handleBadRequest(final BadRequestException ex, final WebRequest request) {
+      final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "error occurred");
+      return buildResponseEntity(ex, apiError);
+    }
+    
+    @ExceptionHandler({ BadCredentialsException.class })
+    public ResponseEntity<Object> handleBadCredentials(final BadCredentialsException ex, final WebRequest request) {
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "error occurred");
         return buildResponseEntity(ex, apiError);
     }
@@ -83,11 +91,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(ex, apiError);
     }
 
+    @ExceptionHandler({ PortfolioNotFoundException.class })
+        public ResponseEntity<Object> handlePortfolioNotFound(final PortfolioNotFoundException ex, final WebRequest request) {
+        final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "error occurred");
+        return buildResponseEntity(ex, apiError);
+    }
+    
     private ResponseEntity<Object> buildResponseEntity(Exception ex, ApiError apiError) {
         logger.info(ex.getClass().getName());
         logger.error("error", ex);
 
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
+
+
 
 }

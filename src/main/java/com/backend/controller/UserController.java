@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public FindUserResponse findById(@PathVariable long id) {
+    public FindUserResponse findById(@PathVariable String id) {
         User user = userService.findById(id);
         FindUserResponse response = new FindUserResponse();
         
@@ -67,12 +67,21 @@ public class UserController {
         logger.info("username: " + request.getUsername());
         logger.info("email: " + request.getEmail());
 
+        if (request.getId() == null) {
+            throw new BadRequestException(Constants.MESSAGE_MALFORMEDREQUEST);
+        }
+
         if (request.getUsername() == null || request.getUsername().isEmpty()) {
             throw new BadRequestException(Constants.MESSAGE_INVALIDUSERNAME);
         }
 
-        if (request.getEmail() == null || !Pattern.matches("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", request.getEmail())) {
-            throw new BadRequestException(Constants.MESSAGE_INVALIDEMAIL);
+        if (request.getEmail() == null
+            || !Pattern.matches("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", request.getEmail())) {
+          throw new BadRequestException(Constants.MESSAGE_INVALIDEMAIL);
+        }
+        boolean isUserIdExist = userService.isUserIdExist(request.getId());
+        if (isUserIdExist) {
+            throw new BadCredentialsException(Constants.MESSAGE_SAMEUSEREXIST);
         }
 
         boolean isUsernameExist = userService.isUsernameExist(request.getUsername());
@@ -80,12 +89,12 @@ public class UserController {
             throw new BadCredentialsException(Constants.MESSAGE_SAMEUSERNAMEEXIST);
         }
 
-        boolean isTcnoExist = userService.isEmailExist(request.getEmail());
-        if (isTcnoExist) {
+        boolean isEmailExist = userService.isEmailExist(request.getEmail());
+        if (isEmailExist) {
             throw new BadCredentialsException(Constants.MESSAGE_SAMEEMAILEXIST);
         }
 
-        User user = userService.createNewUser(new User(request.getUsername(), request.getEmail()));
+        User user = userService.createNewUser(new User(request.getId(), request.getUsername(), request.getEmail()));
 
         CreateUserResponse response = new CreateUserResponse();
         response.setUsername(user.getUsername());
@@ -94,7 +103,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/portfolios")
-    public FindUserPortfolios findUserPortolios(@PathVariable long id) {
+    public FindUserPortfolios findUserPortolios(@PathVariable String id) {
         logger.info("Finding user " + id + " portfolio");
         List<Portfolio> portfolios = userService.findUserPortfolios(id);
         FindUserPortfolios response = new FindUserPortfolios();

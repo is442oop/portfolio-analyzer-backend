@@ -8,14 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.backend.model.Asset;
-// import com.backend.configuration.Constants;
 import com.backend.response.GetAssetByTickerResponse;
 import com.backend.response.AssetResponse;
 import com.backend.service.abstractions.IAssetService;
@@ -31,9 +28,9 @@ public class AssetController {
         this.assetService = assetService;
     }
 
-    @GetMapping(path = "/asset/")
-    public GetAssetByTickerResponse findByAssetTicker(@RequestParam("ticker") String ticker) {
-        Asset asset = assetService.findByAssetTicker(ticker);
+    @GetMapping(path = "/asset/{assetTicker}")
+    public GetAssetByTickerResponse findByAssetTicker(@PathVariable("assetTicker") String assetTicker) {
+        Asset asset = assetService.findByAssetTicker(assetTicker);
 
         GetAssetByTickerResponse response = new GetAssetByTickerResponse();
         // response.setAssetId(asset.getAssetId());

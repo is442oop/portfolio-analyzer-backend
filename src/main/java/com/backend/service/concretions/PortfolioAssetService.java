@@ -1,10 +1,13 @@
 package com.backend.service.concretions;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.backend.model.Portfolio;
 import com.backend.model.PortfolioAsset;
 import com.backend.repository.PortfolioAssetRepository;
 import com.backend.exception.PortfolioNotFoundException;
@@ -75,4 +78,15 @@ public class PortfolioAssetService implements com.backend.service.abstractions.I
         }
     }
 
+
+    @Override 
+    public List<PortfolioAsset> aggregatePortfolioAssets(List<PortfolioAsset> portfolioAssetList) {
+        Map<String, PortfolioAsset> aggregatedPortfolioAssets = portfolioAssetList.stream()
+                        .collect(Collectors.groupingBy(e -> e.getAssetTicker(), Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                l -> l.stream().reduce(PortfolioAsset::merge).get())));
+        List<PortfolioAsset> aggregatedPortfolioAssetsList = aggregatedPortfolioAssets.values().stream().collect(Collectors.toList());
+        return aggregatedPortfolioAssetsList;
+
+    }
 }
