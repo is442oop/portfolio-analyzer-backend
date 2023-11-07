@@ -57,7 +57,7 @@ public class AssetController {
         return responseList;
     }
 
-    @GetMapping(path = "/asset/format")
+    @GetMapping(path = "/assets/format")
     public List<AssetFormatResponse> getAssetsByIndustry() {
         List<Asset> assetList = assetService.findAll();
         List<AssetFormatResponse> responseList = new ArrayList<>();
