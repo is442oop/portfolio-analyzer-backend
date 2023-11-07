@@ -10,17 +10,19 @@ IF /I "%~1"=="down" GOTO DOWN
 IF /I "%~1"=="prune" GOTO PRUNE
 IF /I "%~1"=="build" GOTO BUILD
 IF /I "%~1"=="mvn" GOTO MVN
+IF /I "%~1"=="restart" GOTO RESTART
 IF /I "%~1"=="help" GOTO HELP
 
 :help
 ECHO Available targets:
-ECHO   dev    : Run Docker Compose and Maven project
-ECHO   up     : Start Docker services in the background
-ECHO   down   : Stop and remove Docker containers, networks, volumes
-ECHO   prune  : Remove unused Docker containers, networks, volumes, images
-ECHO   build  : Clean and build the Maven project
-ECHO   mvn    : Run the Maven project
-ECHO   help   : Show this help message
+ECHO   dev     : Run Docker Compose and Maven project
+ECHO   up      : Start Docker services in the background
+ECHO   down    : Stop and remove Docker containers, networks, volumes
+ECHO   prune   : Remove unused Docker containers, networks, volumes, images
+ECHO   build   : Clean and build the Maven project
+ECHO   mvn     : Run the Maven project
+ECHO   restart : Restart the backend service
+ECHO   help    : Show this help message
 GOTO :EOF
 
 :DEV
@@ -28,7 +30,7 @@ call :UP
 GOTO :EOF
 
 :UP
-CALL docker compose -f ./.docker/docker-compose.yml up -d --build
+CALL docker compose -f ./.docker/docker-compose.yml up --build
 GOTO :EOF
 
 :DOWN
@@ -46,3 +48,6 @@ GOTO :EOF
 :MVN
 CALL ./scripts/mvnw.cmd spring-boot:run
 GOTO :EOF
+
+:RESTART
+CALL docker compose -f ./.docker/docker-compose.yml restart backend

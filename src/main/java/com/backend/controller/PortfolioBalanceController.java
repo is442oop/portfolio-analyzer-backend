@@ -4,14 +4,12 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.antlr.v4.runtime.tree.Tree;
 import org.apache.http.HttpResponse;
 
 import org.apache.http.client.HttpClient;
@@ -37,6 +34,8 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import io.github.cdimascio.dotenv.Dotenv;
+
 import com.backend.model.PortfolioAsset;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.response.GetPortfolioBalanceResponse;
@@ -114,12 +113,9 @@ public class PortfolioBalanceController {
         if (!output.containsKey(sevenDaysAgoEpochTime)){
             sevenDaysAgoEpochTime = output.firstKey();
         }
-        System.out.println("first date in output: " + sevenDaysAgoEpochTime);
-        System.out.println();
-        System.out.println(output);
+
         Map<String, Integer> temp = output.get(output.firstKey());
         for (long epochTime = sevenDaysAgoEpochTime; epochTime <= yesterdayEpochTime; epochTime += 86400){
-            System.out.println("epochTime: " + epochTime);
             if (!output.containsKey(epochTime)){
                 output.put(epochTime, temp);
             }
@@ -128,8 +124,6 @@ public class PortfolioBalanceController {
                 output.put(epochTime, temp);
             }
         }
-        System.out.println();
-        System.out.println("OUTPUT : " + output);
         return output;
     }
 
@@ -162,7 +156,6 @@ public class PortfolioBalanceController {
             String dateClose = dateIterator.next();
             JsonObject priceDate = histPrices.getAsJsonObject(dateClose);
             double priceString = priceDate.get("5. adjusted close").getAsDouble();
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date date = sdf.parse(dateClose);
             long epoch = date.getTime() / 1000;
@@ -172,7 +165,6 @@ public class PortfolioBalanceController {
         return output;
     }
 
-
     @GetMapping(path = "/portfolio/balance")
     public GetPortfolioBalanceResponse getPortfolioBalance(@RequestParam("duration") String duration, @RequestParam("pid") int pid) throws Exception {
         Map<String, Map<Long, Double>> assetPriceMap = new LinkedHashMap<>(); // Store daily adjusted close price for each asset
@@ -181,12 +173,15 @@ public class PortfolioBalanceController {
         List<String> tickers = getAssetTickerList(pid);
         int durationInt = Integer.parseInt(duration);
 
+        Dotenv dotenv = Dotenv.configure().load();
+        String apikey = dotenv.get("APIKEY"); 
+
         ExecutorService executor = Executors.newFixedThreadPool(10);
         List<Callable<Map<Long, Double>>> tasks = new ArrayList<>();
 
         for (String ticker : tickers) {
             Callable<Map<Long, Double>> task = () -> {
-                Map<Long, Double> priceData = getHistoricalPrice(ticker, "AJ3EONYVGOHPWZPC", durationInt);
+                Map<Long, Double> priceData = getHistoricalPrice(ticker, apikey, durationInt);
                 return priceData;
             };
             tasks.add(task);
@@ -203,11 +198,14 @@ public class PortfolioBalanceController {
         }
         executor.shutdown();
 
+        // System.out.println();
+        // System.out.println("assetPriceMap: "+assetPriceMap);
+        // System.out.println();
+
         TreeMap<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
         TreeMap<Long, Map<String, Integer>> sortedQtyMap = new TreeMap<>(Collections.reverseOrder());
         TreeMap<Long, Map<String, Integer>> finalQtyMap = new TreeMap<>();
         sortedQtyMap.putAll(qtyMap);
-        System.out.println(sortedQtyMap);
 
         int i = 0;
         for (long epoch : sortedQtyMap.keySet()){
@@ -218,7 +216,11 @@ public class PortfolioBalanceController {
             i += 1;
         }
 
-        double temp = 0;
+        // System.out.println();
+        // System.out.println("finalQtyMap: "+finalQtyMap);
+        // System.out.println();
+
+        // double temp = 0;
         for (long dateEpoch : finalQtyMap.keySet()){
             Map<String, Integer> assetQty = finalQtyMap.get(dateEpoch);
             double dailyBalance = 0;
@@ -228,13 +230,18 @@ public class PortfolioBalanceController {
                     double price = assetPriceMap.get(ticker).get(dateEpoch);
                     dailyBalance += qty * price;
                 }
+                else if (assetPriceMap.get(ticker).containsKey(dateEpoch - 86400)){ // Saturday using friday prices
+                    long tempDateEpoch = dateEpoch - 86400;
+                    double price = assetPriceMap.get(ticker).get(tempDateEpoch);
+                    dailyBalance += qty * price;
+                }
+                else if (assetPriceMap.get(ticker).containsKey(dateEpoch - 86400 - 86400)){
+                    long tempDateEpoch = dateEpoch - 86400 - 86400;
+                    double price = assetPriceMap.get(ticker).get(tempDateEpoch);
+                    dailyBalance += qty * price;
+                }
             }
-            if (dailyBalance == 0){
-                dailyBalance = temp;
-            }
-            else{
-            temp = dailyBalance;
-            }
+
             output.put(dateEpoch, dailyBalance);
         }
 
@@ -246,11 +253,10 @@ public class PortfolioBalanceController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
             Date dateEpoch = new Date(epoch * 1000);
-            System.out.println("epoch: " + epoch);
             String dateStr = sdf.format(dateEpoch);
 
-            System.out.println("dateStr: " + dateStr);
-
+            tempMap.put("epoch", epoch);
+            tempMap.put("dateEpoch", dateEpoch);
             tempMap.put("date", dateStr);
             tempMap.put("balance", output.get(epoch));
             portfolioHistoryData.add(tempMap);

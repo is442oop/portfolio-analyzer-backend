@@ -35,6 +35,8 @@ services:
       DB_PWD: changeme
     networks:
       - nw
+    volumes:
+      - ../:/usr/app
 
 volumes:
   pg_data:
