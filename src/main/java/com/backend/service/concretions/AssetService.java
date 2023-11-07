@@ -18,7 +18,7 @@ public class AssetService implements com.backend.service.abstractions.IAssetServ
     }
 
     @Override
-    public Asset findByAssetTicker(String assetTicker){
+    public Asset findByAssetTicker(String assetTicker) {
         Asset asset = repository.findByAssetTicker(assetTicker);
         return asset;
     }
@@ -27,14 +27,5 @@ public class AssetService implements com.backend.service.abstractions.IAssetServ
     public List<Asset> findAll() {
         return repository.findAll();
     }
-    
-    // @Override
-    // public Asset findByAssetId(long assetId) {
-    //     Asset asset = repository.findByAssetId(assetId);
-    //     if (asset == null) {
-    //         throw new AssetNotFoundException(assetId);
-    //     } else {
-    //         return asset;
-        // }
-    // }
+
 }

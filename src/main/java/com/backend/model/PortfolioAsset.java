@@ -1,7 +1,6 @@
 package com.backend.model;
 
 import lombok.Data;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,11 +21,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.GenerationType;
 
-
 @Data
 @Entity
-@Table(name="portfolio_asset", schema = "prod")
-@SequenceGenerator(name = "portfolio-asset-sequence-gen", sequenceName = "portfolio_asset_id_seq" , allocationSize = 1)
+@Table(name = "portfolio_asset", schema = "prod")
+@SequenceGenerator(name = "portfolio-asset-sequence-gen", sequenceName = "portfolio_asset_id_seq", allocationSize = 1)
 
 public class PortfolioAsset {
 
@@ -37,7 +35,7 @@ public class PortfolioAsset {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="portfolio_id", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name = "portfolio_id", nullable = false, insertable = false, updatable = false)
     private Portfolio portfolio;
 
     @Column(name = "portfolio_id")
@@ -60,10 +58,10 @@ public class PortfolioAsset {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="asset_ticker", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name = "asset_ticker", nullable = false, insertable = false, updatable = false)
     private Asset asset;
 
-    public PortfolioAsset(){
+    public PortfolioAsset() {
     }
 
     public PortfolioAsset(long portfolioId, String assetTicker, double price, int quantity) {
@@ -83,14 +81,14 @@ public class PortfolioAsset {
         this.quantity += other.getQuantity();
         this.price = (thisAggregatePrice + otherAggregatePrice) / this.quantity;
         this.price = Math.round(this.price * 100.0) / 100.0;
-        
+
         return this;
     }
 
-    public Map<String,String> getDateCreatedStringMap() {
+    public Map<String, String> getDateCreatedStringMap() {
         Map<String, String> dates = new HashMap<>();
         long unixCreated = this.dateCreated;
-        Date created = new Date(unixCreated*1000L);
+        Date created = new Date(unixCreated * 1000L);
         SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         String createdDate = jdf.format(created);
@@ -100,10 +98,10 @@ public class PortfolioAsset {
         return dates;
     }
 
-    public Map<String,String> getDateModifiedStringMap() {
+    public Map<String, String> getDateModifiedStringMap() {
         Map<String, String> dates = new HashMap<>();
         long unixModified = this.dateModified;
-        Date modified = new Date(unixModified*1000L);
+        Date modified = new Date(unixModified * 1000L);
         SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         String modifiedDate = jdf.format(modified);
@@ -112,5 +110,5 @@ public class PortfolioAsset {
 
         return dates;
     }
-    
+
 }

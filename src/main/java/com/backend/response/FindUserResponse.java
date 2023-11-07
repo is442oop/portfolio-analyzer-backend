@@ -5,6 +5,7 @@ import java.util.List;
 import com.backend.model.Portfolio;
 
 import lombok.Data;
+
 @Data
 
 public class FindUserResponse {
