@@ -33,13 +33,11 @@ public class AssetController {
         Asset asset = assetService.findByAssetTicker(assetTicker);
 
         GetAssetByTickerResponse response = new GetAssetByTickerResponse();
-        // response.setAssetId(asset.getAssetId());
         response.setAssetTicker(asset.getAssetTicker());
         response.setAssetName(asset.getAssetName());
         response.setAssetDescription(asset.getAssetDescription());
         response.setAssetIndustry(asset.getAssetIndustry());
         response.setAssetType(asset.getAssetType());
-        // response.setAssetRefDataList(asset.getAssetRefDataList());
 
         return response;
     }

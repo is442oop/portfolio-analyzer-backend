@@ -37,6 +37,9 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
+import io.github.cdimascio.dotenv.Dotenv;
+
 import com.backend.exception.PortfolioNotFoundException;
 import com.backend.model.Portfolio;
 import com.backend.model.PortfolioAsset;
@@ -50,6 +53,7 @@ import com.backend.response.GetUserOverallPortfolioBalanceResponse;
 public class PortfolioBalanceController {
     private final IPortfolioAssetService portfolioAssetService;
     private final IUserService userService;
+    private static final Dotenv dotenv = Dotenv.configure().load();
 
     @Autowired
     public PortfolioBalanceController(IPortfolioAssetService portfolioAssetService, IUserService userService) {
@@ -184,7 +188,7 @@ public class PortfolioBalanceController {
         List<Callable<Map<Long, Double>>> tasks = new ArrayList<>();
         for (String ticker : tickers) {
             tasks.add(() -> {
-                Map<Long, Double> priceData = getHistoricalPrice(ticker, "AJ3EONYVGOHPWZPC", days);
+                Map<Long, Double> priceData = getHistoricalPrice(ticker, dotenv.get("APIKEY"), days);
                 return priceData;
             });
         }
