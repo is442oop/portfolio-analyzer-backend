@@ -8,6 +8,7 @@ help:
 	@echo "  prune  : Remove unused Docker containers, networks, volumes, images"
 	@echo "  build  : Clean and build the Maven project"
 	@echo "  mvn    : Run the Maven project"
+	@echo "  restart: Restart the backend service"
 	@echo "  help   : Show this help message"
 
 dev: up
@@ -26,3 +27,6 @@ build:
 
 mvn:
 	./scripts/mvnw spring-boot:run
+
+restart:
+	docker compose -f ./.docker/docker-compose.yml restart backend
