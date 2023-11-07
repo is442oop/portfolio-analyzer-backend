@@ -9,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BackendApplication {
 
     public static void main(String[] args) {
-        if (System.getenv("APP_ENV").equals("production")) {
+        String env = System.getenv("APP_ENV");
+        if (env != null && env.equals("production")) {
             String dbUrl = System.getenv("DB_URL");
             String dbUser = System.getenv("DB_USER");
             String dbPwd = System.getenv("DB_PWD");
