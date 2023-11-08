@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
@@ -35,6 +38,7 @@ public class PortfolioAsset {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_id", nullable = false, insertable = false, updatable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Portfolio portfolio;
 
     @Column(name = "portfolio_id")

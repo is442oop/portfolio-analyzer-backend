@@ -31,11 +31,14 @@ import com.backend.request.CreatePortfolioRequest;
 import com.backend.request.UpdatePortfolioMetaDataRquest;
 import com.backend.response.CreatePortfolioAssetResponse;
 import com.backend.response.CreatePortfolioResponse;
+import com.backend.response.DeletePortfolioResponse;
 import com.backend.response.FindAllPortfoliosResponse;
 import com.backend.response.GetAllAssetsByPortfolioIdResponse;
 import com.backend.response.GetAllPortfolioAssetsByUserResponse;
+import com.backend.response.GetPortfolioAssetResponse;
 import com.backend.response.GetPortfolioByIdResponse;
 import com.backend.response.UpdatePortfolioMetadataResponse;
+import com.backend.service.abstractions.IAssetService;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.service.abstractions.IPortfolioService;
 import com.backend.service.abstractions.IUserService;
@@ -370,5 +373,31 @@ public class PortfolioController {
         response.setPortfolioAssetList(output);
         return response;
     }
+
+	@DeleteMapping(path = "/portfolios/{pid}")
+		public DeletePortfolioResponse deletePortfolio(@PathVariable long pid){
+			// check if pid is valid
+			Portfolio portfolio = portfolioService.findByPid(pid);
+			if (portfolio == null) {
+				throw new PortfolioNotFoundException(pid);
+			}
+			portfolioService.deletePortfolio(pid);
+			DeletePortfolioResponse response = new DeletePortfolioResponse();
+			response.setMessage("Portfolio with pid=" + pid + " deleted successfully");
+
+			return response;
+	}
+
+	@GetMapping(path = "/portfolios/assets/{portfolioAssetId}")
+	public GetPortfolioAssetResponse getPortfolioAssetByPortfolioAssetId(@PathVariable long portfolioAssetId) {
+		PortfolioAsset portfolioAsset = portfolioAssetService.findByPortfolioAssetId(portfolioAssetId);
+		if (portfolioAsset == null) {
+			throw new PortfolioAssetNotFoundException(portfolioAssetId);
+		}
+		GetPortfolioAssetResponse response = new GetPortfolioAssetResponse();
+		response.setPortfolioAsset(portfolioAsset);
+
+		return response;
+	}
 
 }

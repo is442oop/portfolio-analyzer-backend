@@ -43,4 +43,9 @@ public class PortfolioService implements com.backend.service.abstractions.IPortf
         return repository.save(updatedPortfolio);
     }
 
+    @Override
+    public void deletePortfolio(long pid) {
+        repository.deleteById(pid);
+    }
+
 }
