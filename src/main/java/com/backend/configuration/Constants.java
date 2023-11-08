@@ -20,4 +20,5 @@ public final class Constants {
     public static final String MESSAGE_INVALIDASSETID = "Asset id is missing";
     public static final String MESSAGE_INVALIDASSETTICKER = "Asset ticker is missing";
     public static final String MESSAGE_MISSINGPORTFOLIOMETADATA = "Either portfolio name or description is required to update portfolio metadata";
+    public static final String MESSAGE_MISSINGWATCHLISTDATA = "Either watchlist user id or watchlist assets is required to create watchlist";
 }

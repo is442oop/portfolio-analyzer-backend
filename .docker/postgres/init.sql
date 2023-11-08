@@ -19,6 +19,9 @@ CREATE SEQUENCE portfolio_asset_id_seq START 1;
 -- Create the asset_ref_data_id_seq sequence
 CREATE SEQUENCE asset_ref_data_id_seq START 1;
 
+-- Create the watchlist_id_seq sequence
+CREATE SEQUENCE watchlist_id_seq START 1;
+
 -- Create the 'user' table under the 'prod' schema with the user_id_seq as the default value for the id column
 CREATE TABLE prod.user (
     id VARCHAR(36) PRIMARY KEY,
@@ -56,6 +59,13 @@ CREATE TABLE prod.portfolio_asset (
     quantity INT NOT NULL,
     date_created  INT NOT NULL DEFAULT extract(epoch from now()),
     date_modified INT NOT NULL DEFAULT extract(epoch from now())
+);
+
+-- Create the 'watchlist' table under the 'prod' schema with the watchlist_id_seq as the default value for the watchlist_id column
+CREATE TABLE prod.watchlist (
+    watchlist_id BIGINT DEFAULT nextval('watchlist_id_seq') PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL REFERENCES prod.user(id),
+    watchlist_assets VARCHAR(15)[] NOT NULL
 );
 
 --- Create the 'asset_ref_data' table under the 'prod' schema with the asset_ref_data_id_seq as the default value for the pid column
@@ -145,9 +155,11 @@ INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, d
 INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (3, 'GOOGL', 2750.50, 10, 1667664000, 1667664000);
 
 
-
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'TSLA', 100.50, 10, 1643121600, 1643121600);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity) VALUES (2, 'QQQ', 75.25, 20);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity) VALUES (2, 'MSFT', 50.75, 15);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity) VALUES (1, 'GOOGL', 120.00, 5);
--- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, date_created, date_modified) VALUES (1, 'MSFT', 90.25, 8, 1668316800, 1668316800);
+INSERT INTO prod.watchlist (watchlist_id, user_id, watchlist_assets) VALUES (1, 'd988bdd8-e569-4026-970a-dd6c286ebe6d', ARRAY['AAPL', 'GOOGL', 'TSLA', 'AMZN', 'NVDA', 'NFLX']);
+INSERT INTO prod.watchlist (watchlist_id, user_id, watchlist_assets) VALUES (2, 'bfda515e-8e06-41c8-b157-56fc1b7ee301', ARRAY['AAPL']);
+INSERT INTO prod.watchlist (watchlist_id, user_id, watchlist_assets) VALUES (3, 'a3c7dc58-4d0f-4fa3-9271-c851073d6371', ARRAY['AAPL']);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'TSLA', 100.50, 10, 1643121600, 1643121600);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (2, 'QQQ', 75.25, 20);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (2, 'MSFT', 50.75, 15);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (1, 'GOOGL', 120.00, 5);
+-- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'MSFT', 90.25, 8, 1668316800, 1668316800);
