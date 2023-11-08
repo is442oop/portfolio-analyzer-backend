@@ -11,5 +11,4 @@ public class CreatePortfolioAssetRequest extends BaseRequest {
     private double price;
     private int quantity;
     private long dateCreated;
-    private long dateModified;
 }

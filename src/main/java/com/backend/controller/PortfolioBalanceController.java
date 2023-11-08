@@ -39,6 +39,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import com.backend.configuration.Environment;
+import com.backend.exception.PortfolioAssetNotFoundException;
 import com.backend.exception.PortfolioNotFoundException;
 import com.backend.model.Portfolio;
 import com.backend.model.PortfolioAsset;
@@ -106,6 +107,10 @@ public class PortfolioBalanceController {
         long sevenDaysAgoEpochTime = roundEpochToCurrentDay(calendar.getTime().getTime() / 1000L);
 
         List<PortfolioAsset> portfolioAssetList = portfolioAssetService.findAllByPortfolioId(pid);
+        if (portfolioAssetList.isEmpty()) {
+            return output;
+        }
+
         for (PortfolioAsset portfolioAsset : portfolioAssetList) {
             long dateAdded = portfolioAsset.getDateCreated();
             epochMap.put(roundEpochToCurrentDay(dateAdded), portfolioAsset);
@@ -129,7 +134,6 @@ public class PortfolioBalanceController {
 
         Map<String, Integer> temp = output.get(output.firstKey());
         for (long epochTime = sevenDaysAgoEpochTime; epochTime <= yesterdayEpochTime; epochTime += 86400) {
-            System.out.println("epochTime: " + epochTime);
             if (!output.containsKey(epochTime)) {
                 output.put(epochTime, temp);
             } else {
@@ -152,7 +156,6 @@ public class PortfolioBalanceController {
 
         // Extract the JSON response as a String
         String jsonResponse = EntityUtils.toString(response.getEntity());
-
         Gson gson = new GsonBuilder().create();
         JsonObject jsonRes = gson.fromJson(jsonResponse, JsonObject.class);
         JsonObject histPrices = jsonRes.getAsJsonObject("Time Series (Daily)");
@@ -206,13 +209,29 @@ public class PortfolioBalanceController {
         List<Map<String, Object>> portfolioHistoryData = new ArrayList<Map<String, Object>>(); // Store qty of each
                                                                                                // asset for each day
         TreeMap<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
-        System.out.println(qtyMap);
-        int i = 0;
         double prevDayBalance = 0;
-        for (Map.Entry<Long, Map<String, Integer>> e : qtyMap.descendingMap().entrySet()) {
-            if (i++ == days) {
+        Iterator<Map.Entry<Long, Map<String, Integer>>> qMapIt = qtyMap.descendingMap().entrySet().iterator();
+        Date dateEpoch = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateEpoch);
+        c.add(Calendar.DATE, -1);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        for (int i = 0; i < days + 1; i++) {
+            // to backfill dates without tickers
+            if (!qMapIt.hasNext() && i + 2 < days) {
+                c.setTime(dateEpoch);
+                for (int j = 0; j < days - i; j++) {
+                    c.add(Calendar.DATE, -1);
+                    String date = sdf.format(c.getTime());
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("date", date);
+                    m.put("balance", 0.);
+                    portfolioHistoryData.add(m);
+                }
                 break;
             }
+            Map.Entry<Long, Map<String, Integer>> e = qMapIt.next();
             long epoch = e.getKey();
             Map<String, Integer> assetQty = e.getValue();
             double dailyBalance = 0;
@@ -232,12 +251,8 @@ public class PortfolioBalanceController {
             } else {
                 prevDayBalance = dailyBalance;
             }
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-            Date dateEpoch = new Date(epoch * 1000);
+            dateEpoch = new Date(epoch * 1000L);
             String dateStr = sdf.format(dateEpoch);
-
             Map<String, Object> tempMap = new HashMap<>();
             tempMap.put("date", dateStr);
             tempMap.put("balance", dailyBalance);
@@ -251,6 +266,9 @@ public class PortfolioBalanceController {
     public GetPortfolioBalanceResponse getPortfolioBalance(@PathVariable Long pid,
             @RequestParam("duration") Integer days) throws Exception {
         List<String> tickers = getAssetTickerListByPid(pid);
+        if (tickers.isEmpty()) {
+            throw new PortfolioAssetNotFoundException();
+        }
         Map<String, Map<Long, Double>> assetPriceMap = requestPriceTickers(tickers, days);
         List<Map<String, Object>> portfolioHistoryData = getPortfolioHistoryData(pid, days, assetPriceMap);
         GetPortfolioBalanceResponse response = new GetPortfolioBalanceResponse();
@@ -267,6 +285,9 @@ public class PortfolioBalanceController {
             throw new PortfolioNotFoundException();
         }
         List<String> tickers = getAssetTickerListByUserId(id);
+        if (tickers.isEmpty()) {
+            throw new PortfolioAssetNotFoundException();
+        }
         Map<String, Map<Long, Double>> assetPriceMap = requestPriceTickers(tickers, days);
         List<Map<String, Object>> overallPortfolioBalanceData = new LinkedList<Map<String, Object>>();
         Map<String, Double> aggregatedMap = new LinkedHashMap<>();

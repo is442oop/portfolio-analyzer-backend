@@ -31,9 +31,11 @@ import com.backend.request.CreatePortfolioRequest;
 import com.backend.request.UpdatePortfolioMetaDataRquest;
 import com.backend.response.CreatePortfolioAssetResponse;
 import com.backend.response.CreatePortfolioResponse;
+import com.backend.response.DeletePortfolioResponse;
 import com.backend.response.FindAllPortfoliosResponse;
 import com.backend.response.GetAllAssetsByPortfolioIdResponse;
 import com.backend.response.GetAllPortfolioAssetsByUserResponse;
+import com.backend.response.GetPortfolioAssetResponse;
 import com.backend.response.GetPortfolioByIdResponse;
 import com.backend.response.UpdatePortfolioMetadataResponse;
 import com.backend.service.abstractions.IPortfolioAssetService;
@@ -83,7 +85,6 @@ public class PortfolioController {
                         request.getUserId(),
                         request.getPortfolioName(),
                         request.getDescription()));
-        System.out.println(portfolio.getPid());
 
         CreatePortfolioResponse response = new CreatePortfolioResponse();
         response.setPid(portfolio.getPid());
@@ -157,18 +158,22 @@ public class PortfolioController {
         logger.info("New Portfolio Asset Ticker: " + request.getAssetTicker());
         logger.info("New Portfolio Asset Average Price: " + request.getPrice());
         logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
-        PortfolioAsset portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
-                new PortfolioAsset(
-                        request.getPortfolioId(),
-                        request.getAssetTicker(),
-                        request.getPrice(),
-                        request.getQuantity()));
-
+        logger.info("New Portfolio Asset Created At: " + request.getDateCreated());
+        PortfolioAsset portfolioAsset;
+        try {
+            portfolioAsset = portfolioAssetService.createNewPortfolioAsset(
+                    new PortfolioAsset(
+                            request.getPortfolioId(),
+                            request.getAssetTicker(),
+                            request.getPrice(),
+                            request.getQuantity(),
+                            request.getDateCreated()));
+        } catch (Exception e) {
+            throw new BadRequestException(Constants.MESSAGE_MALFORMEDREQUEST);
+        }
         java.util.Date time = new java.util.Date(portfolioAsset.getDateCreated() * 1000);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'+08:00'");
         CreatePortfolioAssetResponse response = new CreatePortfolioAssetResponse();
-
-        logger.info("Created on: " + time);
         logger.info("New Portfolio Asset Average Price: " + request.getPrice());
         logger.info("New Portfolio Asset Quantity: " + request.getQuantity());
 
@@ -368,6 +373,32 @@ public class PortfolioController {
         }
         GetAllPortfolioAssetsByUserResponse response = new GetAllPortfolioAssetsByUserResponse();
         response.setPortfolioAssetList(output);
+        return response;
+    }
+
+    @DeleteMapping(path = "/portfolios/{pid}")
+    public DeletePortfolioResponse deletePortfolio(@PathVariable long pid) {
+        // check if pid is valid
+        Portfolio portfolio = portfolioService.findByPid(pid);
+        if (portfolio == null) {
+            throw new PortfolioNotFoundException(pid);
+        }
+        portfolioService.deletePortfolio(pid);
+        DeletePortfolioResponse response = new DeletePortfolioResponse();
+        response.setMessage("Portfolio with pid=" + pid + " deleted successfully");
+
+        return response;
+    }
+
+    @GetMapping(path = "/portfolios/assets/{portfolioAssetId}")
+    public GetPortfolioAssetResponse getPortfolioAssetByPortfolioAssetId(@PathVariable long portfolioAssetId) {
+        PortfolioAsset portfolioAsset = portfolioAssetService.findByPortfolioAssetId(portfolioAssetId);
+        if (portfolioAsset == null) {
+            throw new PortfolioAssetNotFoundException(portfolioAssetId);
+        }
+        GetPortfolioAssetResponse response = new GetPortfolioAssetResponse();
+        response.setPortfolioAsset(portfolioAsset);
+
         return response;
     }
 

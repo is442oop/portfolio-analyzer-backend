@@ -19,8 +19,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.backend.exception.AssetNotFoundException;
 import com.backend.exception.BadCredentialsException;
 import com.backend.exception.BadRequestException;
+import com.backend.exception.PortfolioAssetNotFoundException;
 import com.backend.exception.PortfolioNotFoundException;
 import com.backend.exception.UserNotFoundException;
 
@@ -101,6 +103,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ PortfolioNotFoundException.class })
     public ResponseEntity<Object> handlePortfolioNotFound(final PortfolioNotFoundException ex,
+            final WebRequest request) {
+        final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "error occurred");
+        return buildResponseEntity(ex, apiError);
+    }
+
+    @ExceptionHandler({ PortfolioAssetNotFoundException.class })
+    public ResponseEntity<Object> handlePortfolioNotFound(final PortfolioAssetNotFoundException ex,
+            final WebRequest request) {
+        final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "error occurred");
+        return buildResponseEntity(ex, apiError);
+    }
+
+    @ExceptionHandler({ AssetNotFoundException.class })
+    public ResponseEntity<Object> handlePortfolioNotFound(final AssetNotFoundException ex,
             final WebRequest request) {
         final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "error occurred");
         return buildResponseEntity(ex, apiError);

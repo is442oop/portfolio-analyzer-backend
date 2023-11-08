@@ -12,4 +12,6 @@ public interface IPortfolioService {
     Portfolio findByPid(long pid);
 
     Portfolio updatePortfolio(Portfolio portfolio);
+
+    void deletePortfolio(long pid);
 }
