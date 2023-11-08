@@ -156,6 +156,8 @@ INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, price, quantity, d
 
 
 INSERT INTO prod.watchlist (watchlist_id, user_id, watchlist_assets) VALUES (1, 'd988bdd8-e569-4026-970a-dd6c286ebe6d', ARRAY['AAPL', 'GOOGL', 'TSLA', 'AMZN', 'NVDA', 'NFLX']);
+INSERT INTO prod.watchlist (watchlist_id, user_id, watchlist_assets) VALUES (2, 'bfda515e-8e06-41c8-b157-56fc1b7ee301', ARRAY['AAPL']);
+INSERT INTO prod.watchlist (watchlist_id, user_id, watchlist_assets) VALUES (2, 'a3c7dc58-4d0f-4fa3-9271-c851073d6371', ARRAY['AAPL']);
 -- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity, date_created, date_modified) VALUES (1, 'TSLA', 100.50, 10, 1643121600, 1643121600);
 -- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (2, 'QQQ', 75.25, 20);
 -- INSERT INTO prod.portfolio_asset (portfolio_id, asset_ticker, average_price_decimal, quantity) VALUES (2, 'MSFT', 50.75, 15);
