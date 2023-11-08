@@ -119,6 +119,7 @@ Follow these steps to get the application up and running quickly.
 * **Java JDK 17**: You'll need Java Development Kit (JDK) installed on your system. You can download and install it from the [official Oracle website](https://www.oracle.com/java/technologies/downloads/)
 * **Apache Maven**: A build automation tool used for managing and building Java projects. You can download and install Maven from the [official Apache Maven website](https://maven.apache.org/).
 * **Node.js**: JavaScript runtime used for running the application. You can download and install Node.js from the [official Node.js website](https://nodejs.org/en/download).
+* **Supabase**: An open source Firebase alternative. You can create your own project from the [official Supabase website](https://supabase.com/)
 
 
 ### Installation
@@ -133,15 +134,22 @@ Follow these steps to get the application up and running quickly.
    cd portfolio-analyzer-web-ui
    npm install
    ```
+4. Create a `.env` file in `portfolio-analyzer-web-ui` root folder with your API keys and Supabase URL.
+    ```
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=ENTER-YOUR-KEY
+    NEXT_PUBLIC_SUPABASE_URL=ENTER-DATABASE-URL
+    API_URL=http://localhost:8080
+    ALPHA_VANTAGE_API_KEY=ENTER-API-KEY
+    ```
 
-4. Clone the backend repo
+5. Clone the backend repo
     ```
     https://github.com/is442oop/portfolio-analyzer-backend.git
     ```
 
-5. Create a `.env` file in `src\main\resources` with your API key
+6. Create a `.env` file in `src\main\resources` with your API key
    ```
-   APIKEY='ENTER YOUR API';
+   APIKEY=ENTER-API-KEY
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -168,6 +176,11 @@ Starting up the backend server
     mvn    : Run the Maven project
     help   : Show this help message
   ```
+  For quick start, run the following command in your terminal from the root backend folder
+  ```powershell
+  make.bat dev
+  ```
+
 * For OSX/WSL/Linux (Unix-based), a [`makefile`](makefile) can be used instead
 
   ```sh
@@ -182,7 +195,11 @@ Starting up the backend server
     mvn    : Run the Maven project
     help   : Show this help message
   ```
+  For quick start, run the following command in your terminal from the root backend folder
 
+  ```zsh  
+  make dev
+  ```
 
 
 <!-- USAGE EXAMPLES -->
@@ -190,13 +207,13 @@ Starting up the backend server
 
 https://github.com/is442oop/portfolio-analyzer-backend/assets/101630007/a9b13251-f070-4c89-9a22-713a4515d21e
 
-To better understand the backend services running, a [Swagger UI](http://localhost:8080/api/swagger-ui/index.html#/) has been created to visualise and test backend API endpoints
+To better understand the backend services running, a [Swagger UI](http://localhost:8080/api/swagger-ui/index.html#/) has been created to visualise and test backend API endpoints. Start up the backend services to view the UI.
 
 ![image](https://github.com/is442oop/portfolio-analyzer-backend/assets/101630007/49bca898-293c-4ad5-a48f-8a17819189db)
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+<!-- Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
