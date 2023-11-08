@@ -212,14 +212,15 @@ public class PortfolioBalanceController {
         double prevDayBalance = 0;
         Iterator<Map.Entry<Long, Map<String, Integer>>> qMapIt = qtyMap.descendingMap().entrySet().iterator();
         Date dateEpoch = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateEpoch);
+        c.add(Calendar.DATE, -1);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         for (int i = 0; i < days + 1; i++) {
             // to backfill dates without tickers
             if (!qMapIt.hasNext() && i + 2 < days) {
-                Calendar c = Calendar.getInstance();
                 c.setTime(dateEpoch);
-                c.add(Calendar.DATE, -1);
                 for (int j = 0; j < days - i; j++) {
                     c.add(Calendar.DATE, -1);
                     String date = sdf.format(c.getTime());
