@@ -67,12 +67,12 @@ public class PortfolioAsset {
     public PortfolioAsset() {
     }
 
-    public PortfolioAsset(long portfolioId, String assetTicker, double price, int quantity) {
+    public PortfolioAsset(long portfolioId, String assetTicker, double price, int quantity, long dateCreated) {
         this.portfolioId = portfolioId;
         this.assetTicker = assetTicker;
         this.price = price;
         this.quantity = quantity;
-        this.dateCreated = System.currentTimeMillis() / 1000;
+        this.dateCreated = dateCreated;
         this.dateModified = System.currentTimeMillis() / 1000;
     }
 
@@ -90,7 +90,7 @@ public class PortfolioAsset {
         Map<String, String> dates = new HashMap<>();
         long unixCreated = this.dateCreated;
         Date created = new Date(unixCreated * 1000L);
-        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
+        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'+08:00'");
         jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         String createdDate = jdf.format(created);
 
@@ -103,7 +103,7 @@ public class PortfolioAsset {
         Map<String, String> dates = new HashMap<>();
         long unixModified = this.dateModified;
         Date modified = new Date(unixModified * 1000L);
-        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
+        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'+08:00'");
         jdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         String modifiedDate = jdf.format(modified);
 
