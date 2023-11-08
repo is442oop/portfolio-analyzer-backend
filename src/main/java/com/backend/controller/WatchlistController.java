@@ -98,7 +98,7 @@ public class WatchlistController {
 
 		int count = 0; 
 		for (String dateStr : assetHistPrices.keySet()){
-			if (count == 168){ // 168 hours in 7 days
+			if (count == 112){ // 16 hours in 7 days - alphavantage only up to 16hr
 				break;
 			}
 			JsonObject priceJson = assetHistPrices.getAsJsonObject(dateStr);
