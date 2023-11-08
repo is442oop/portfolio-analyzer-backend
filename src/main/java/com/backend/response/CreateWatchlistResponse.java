@@ -8,5 +8,5 @@ import lombok.Data;
 public class CreateWatchlistResponse {
     private String userId;
     private long watchlistId;
-    private List<String> watchlist_assets;
+    private List<String> watchlistAssets;
 }

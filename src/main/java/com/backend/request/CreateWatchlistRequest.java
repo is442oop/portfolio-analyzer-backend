@@ -8,5 +8,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class CreateWatchlistRequest {
     private String userId;
-    private List<String> watchlist_assets;
+    private List<String> watchlistAssets;
 }
