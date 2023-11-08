@@ -180,7 +180,7 @@ public class WatchlistController {
 		return response;
     }
 
-	@GetMapping(path = "/watchlist/user/{uid}")
+	@GetMapping(path = "/watchlist/user/{uid}/prices")
     public GetWatchlistPriceDataResponse getWatchlistPricesByUid(@PathVariable String uid) throws Exception {
 		Watchlist watchlist = watchlistService.findByUid(uid);
 
@@ -346,4 +346,15 @@ public class WatchlistController {
 
                 return response;
             }
+
+	@GetMapping(path = "/watchlist/user/{uid}")
+	public GetWatchlistByIdResponse getWatchlistByUid(@PathVariable String uid) {
+		Watchlist watchlist = watchlistService.findByUid(uid);
+		GetWatchlistByIdResponse response = new GetWatchlistByIdResponse();
+		response.setUserId(watchlist.getUid());
+		response.setWatchlistId(watchlist.getWid());
+		response.setWatchlist_assets(watchlist.getAssets());
+
+		return response;
+	}
 }
