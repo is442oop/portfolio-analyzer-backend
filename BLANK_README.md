@@ -93,7 +93,6 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 ### Built With
 
 * [![Next][Next.js]][Next-url]
@@ -189,7 +188,7 @@ Starting up the backend server
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-![watch](https://github.com/is442oop/portfolio-analyzer-backend/assets/77909441/213b04dc-9c82-4247-bc9a-d646d852d773)
+https://github.com/is442oop/portfolio-analyzer-backend/assets/101630007/a9b13251-f070-4c89-9a22-713a4515d21e
 
 To better understand the backend services running, a [Swagger UI](http://localhost:8080/api/swagger-ui/index.html#/) has been created to visualise and test backend API endpoints
 
