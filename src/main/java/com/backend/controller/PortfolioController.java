@@ -388,8 +388,7 @@ public class PortfolioController {
 			return response;
 	}
 
-	// get portfolioAsset by portfolioAssetId
-	@GetMapping(path = "/portfolio/asset/{portfolioAssetId}")
+	@GetMapping(path = "/portfolios/assets/{portfolioAssetId}")
 	public GetPortfolioAssetResponse getPortfolioAssetByPortfolioAssetId(@PathVariable long portfolioAssetId) {
 		PortfolioAsset portfolioAsset = portfolioAssetService.findByPortfolioAssetId(portfolioAssetId);
 		if (portfolioAsset == null) {
