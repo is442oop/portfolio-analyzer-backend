@@ -224,7 +224,6 @@ public class PortfolioBalanceController {
                     c.add(Calendar.DATE, -1);
                     String date = sdf.format(c.getTime());
                     Map<String, Object> m = new HashMap<>();
-                    System.out.println("pid: " + pid + " & no bal date: " + date);
                     m.put("date", date);
                     m.put("balance", 0.);
                     portfolioHistoryData.add(m);
@@ -300,9 +299,6 @@ public class PortfolioBalanceController {
                 aggregatedMap.put(date,
                         aggregatedMap.getOrDefault(date, 0.) + balance);
             }
-            System.out.println("pid: " + pid);
-            System.out.println("portfolioHistoryData: " + portfolioHistoryData);
-            System.out.println("aggregatedMap: " + aggregatedMap);
         }
         for (Map.Entry<String, Double> entry : aggregatedMap.entrySet()) {
             Map<String, Object> aggregatedEntry = new HashMap<>();

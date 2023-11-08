@@ -87,7 +87,6 @@ public class PortfolioController {
                         request.getUserId(),
                         request.getPortfolioName(),
                         request.getDescription()));
-        System.out.println(portfolio.getPid());
 
         CreatePortfolioResponse response = new CreatePortfolioResponse();
         response.setPid(portfolio.getPid());
