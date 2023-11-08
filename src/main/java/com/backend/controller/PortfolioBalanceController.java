@@ -207,12 +207,10 @@ public class PortfolioBalanceController {
                                                                                                // asset for each day
         TreeMap<Long, Map<String, Integer>> qtyMap = getHistoricalQty(pid);
         System.out.println(qtyMap);
-        int i = 0;
         double prevDayBalance = 0;
-        for (Map.Entry<Long, Map<String, Integer>> e : qtyMap.descendingMap().entrySet()) {
-            if (i++ == days) {
-                break;
-            }
+        Iterator<Map.Entry<Long, Map<String, Integer>>> qMapIt = qtyMap.descendingMap().entrySet().iterator();
+        for (int i = 0; i < days; i++) {
+            Map.Entry<Long, Map<String, Integer>> e = qMapIt.next();
             long epoch = e.getKey();
             Map<String, Integer> assetQty = e.getValue();
             double dailyBalance = 0;
@@ -242,6 +240,21 @@ public class PortfolioBalanceController {
             tempMap.put("date", dateStr);
             tempMap.put("balance", dailyBalance);
             portfolioHistoryData.add(tempMap);
+
+            // to backfill dates without tickers
+            if (!qMapIt.hasNext() && i < days - 1) {
+                Calendar c = Calendar.getInstance();
+                c.setTime(dateEpoch);
+                for (int j = 0; j < days - i; j++) {
+                    c.add(Calendar.DATE, -1);
+                    String date = sdf.format(c.getTime());
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("date", date);
+                    m.put("balance", 0);
+                    portfolioHistoryData.add(m);
+                }
+                break;
+            }
         }
         Collections.reverse(portfolioHistoryData);
         return portfolioHistoryData;
