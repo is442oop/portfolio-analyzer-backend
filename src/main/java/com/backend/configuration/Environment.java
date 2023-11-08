@@ -6,6 +6,10 @@ public class Environment {
     private static final Dotenv dotenv = Dotenv.configure().load();
 
     public static String getEnv(String key) {
-        return dotenv.get(key);
+        String k = dotenv.get(key, System.getenv(key));
+        if (k == null) {
+            throw new RuntimeException("Environment variable '" + key + "' not set!");
+        }
+        return k;
     }
 }

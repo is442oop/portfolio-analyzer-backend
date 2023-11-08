@@ -1,7 +1,6 @@
 package com.backend.controller;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +38,6 @@ import com.backend.response.GetAllPortfolioAssetsByUserResponse;
 import com.backend.response.GetPortfolioAssetResponse;
 import com.backend.response.GetPortfolioByIdResponse;
 import com.backend.response.UpdatePortfolioMetadataResponse;
-import com.backend.service.abstractions.IAssetService;
 import com.backend.service.abstractions.IPortfolioAssetService;
 import com.backend.service.abstractions.IPortfolioService;
 import com.backend.service.abstractions.IUserService;
