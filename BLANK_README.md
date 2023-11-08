@@ -86,9 +86,7 @@
 
 This project is a portfolio analyzer designed to help investment bankers and fund managers manage and analyze their investment portfolios. Whether you're a seasoned investor looking for advanced analytics or a novice investor wanting to track your investments, our project aims to provides the tools and insights you need to make informed financial decisions.
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+![image](https://github.com/is442oop/portfolio-analyzer-backend/assets/101630007/00f1d53d-2be6-4b25-9dbc-2866c80fc6be)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -104,6 +102,8 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 * [![Supabase][Supabase]][Supbase-url]
 * [![Postgres][Postgres]][Postgres-url]
 * [![Docker][Docker]][Docker-url ]
+* [![Vercel][Vercel]][Vercel-url]
+* [![Google Cloud][Google-Cloud]][Google-Cloud-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -218,21 +218,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_ --
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -250,16 +235,6 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- CONTACT -->
 ## Contact
 
@@ -269,16 +244,6 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -315,3 +280,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Postgres-url]: https://www.postgresql.org/
 [Docker]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
 [Docker-url]: https://www.docker.com/
+[Vercel]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
+[Vercel-url]: https://vercel.com/
+[Google-Cloud]: https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white
+[Google-Cloud-URL]: https://cloud.google.com/free/?utm_source=google&utm_medium=cpc&utm_campaign=japac-SG-all-en-dr-BKWS-all-core-trial-EXA-dr-1605216&utm_content=text-ad-none-none-DEV_c-CRE_602258786551-ADGP_Hybrid%20%7C%20BKWS%20-%20EXA%20%7C%20Txt%20~%20GCP_General_core%20brand_main-KWID_43700071544383215-aud-1644542956228%3Akwd-26415313501&userloc_9062530-network_g&utm_term=KW_google%20cloud%20platform&gclid=Cj0KCQiAgK2qBhCHARIsAGACuzn7TZrLh0PyuAGwdTsxycRy90V_j6bfmv6Hf4RYkg3Aromq84FZpecaAl5lEALw_wcB&gclsrc=aw.ds
