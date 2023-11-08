@@ -216,7 +216,6 @@ public class PortfolioBalanceController {
         c.setTime(dateEpoch);
         c.add(Calendar.DATE, -1);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         for (int i = 0; i < days + 1; i++) {
             // to backfill dates without tickers
             if (!qMapIt.hasNext() && i + 2 < days) {
