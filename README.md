@@ -135,13 +135,14 @@ Starting up the backend server
   ```sh
   C:\path\to\project\portfolio-analyzer-backend> make.bat help
   Available targets:
-    dev    : Run Docker Compose and Maven project
-    up     : Start Docker services in the background
-    down   : Stop and remove Docker containers, networks, volumes
-    prune  : Remove unused Docker containers, networks, volumes, images
-    build  : Clean and build the Maven project
-    mvn    : Run the Maven project
-    help   : Show this help message
+    dev      : Run Docker Compose and Maven project
+    up       : Start Docker services in the background
+    down     : Stop and remove Docker containers, networks, volumes
+    prune    : Remove unused Docker containers, networks, volumes, images
+    build    : Clean and build the Maven project
+    mvn      : Run the Maven project
+    restart  : Restart the backend service
+    help     : Show this help message
   ```
   For quick start, run the following command in your terminal from the root backend folder
   ```powershell
@@ -154,13 +155,14 @@ Starting up the backend server
   ~/path/to/project/portfolio-analyzer-backend
   ❯ make help
   Available targets:
-    dev    : Run Docker Compose and Maven project
-    up     : Start Docker services in the background
-    down   : Stop and remove Docker containers, networks, volumes
-    prune  : Remove unused Docker containers, networks, volumes, images
-    build  : Clean and build the Maven project
-    mvn    : Run the Maven project
-    help   : Show this help message
+    dev      : Run Docker Compose and Maven project
+    up       : Start Docker services in the background
+    down     : Stop and remove Docker containers, networks, volumes
+    prune    : Remove unused Docker containers, networks, volumes, images
+    build    : Clean and build the Maven project
+    mvn      : Run the Maven project
+    restart  : Restart the backend service
+    help     : Show this help message
   ```
   For quick start, run the following command in your terminal from the root backend folder
 
